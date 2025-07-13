@@ -293,7 +293,7 @@ export default function OrdersPage() {
                         Suivre la livraison
                       </button>
                       <button className="flex-1 bg-gray-100 py-2 rounded-full text-sm font-medium">
-                        Besoin d'aide
+                        Besoin d&#39;aide
                       </button>
                     </div>
                   </div>
@@ -309,7 +309,7 @@ export default function OrdersPage() {
               </svg>
             </div>
             <h3 className="text-lg font-bold mb-2">Aucune commande trouvée</h3>
-            <p className="text-gray-500 mb-4">Vous n'avez pas encore passé de commande ou aucune commande ne correspond à votre recherche.</p>
+            <p className="text-gray-500 mb-4">Vous n&#39;avez pas encore passé de commande ou aucune commande ne correspond à votre recherche.</p>
             <button 
               onClick={() => router.push('/products')}
               className="bg-black text-white px-6 py-2 rounded-full text-sm font-medium"

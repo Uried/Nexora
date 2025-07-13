@@ -22,8 +22,12 @@ export async function clearCart(): Promise<{ ok: boolean; message?: string }>{
     const res = await fetch(`${base}/api/cart?cartId=${encodeURIComponent(cartId)}`, { method: 'DELETE' });
     if (!res.ok) return { ok: false, message: `HTTP ${res.status}` };
     return { ok: true };
-  } catch (e: any) {
-    return { ok: false, message: e?.message || 'Erreur réseau' };
+  } catch (e: unknown) {
+    const message =
+      typeof e === 'object' && e !== null && 'message' in e
+        ? String((e as { message?: unknown }).message)
+        : 'Erreur réseau';
+    return { ok: false, message };
   }
 }
 
@@ -35,8 +39,12 @@ export async function removeCartItem(itemId: string): Promise<{ ok: boolean; mes
     const res = await fetch(`${base}/api/cart/items/${encodeURIComponent(itemId)}?cartId=${encodeURIComponent(cartId)}`, { method: 'DELETE' });
     if (!res.ok) return { ok: false, message: `HTTP ${res.status}` };
     return { ok: true };
-  } catch (e: any) {
-    return { ok: false, message: e?.message || 'Erreur réseau' };
+  } catch (e: unknown) {
+    const message =
+      typeof e === 'object' && e !== null && 'message' in e
+        ? String((e as { message?: unknown }).message)
+        : 'Erreur réseau';
+    return { ok: false, message };
   }
 }
 
@@ -52,8 +60,12 @@ export async function updateCartItemQuantity(itemId: string, quantity: number): 
     });
     if (!res.ok) return { ok: false, message: `HTTP ${res.status}` };
     return { ok: true };
-  } catch (e: any) {
-    return { ok: false, message: e?.message || 'Erreur réseau' };
+  } catch (e: unknown) {
+    const message =
+      typeof e === 'object' && e !== null && 'message' in e
+        ? String((e as { message?: unknown }).message)
+        : 'Erreur réseau';
+    return { ok: false, message };
   }
 }
 
@@ -111,7 +123,11 @@ export async function addToCart(productId: string, quantity: number = 1, priceAt
       return { ok: false, message: text || `HTTP ${res.status}` };
     }
     return { ok: true };
-  } catch (e: any) {
-    return { ok: false, message: e?.message || 'Erreur réseau' };
+  } catch (e: unknown) {
+    const message =
+      typeof e === 'object' && e !== null && 'message' in e
+        ? String((e as { message?: unknown }).message)
+        : 'Erreur réseau';
+    return { ok: false, message };
   }
 }

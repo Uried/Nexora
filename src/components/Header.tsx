@@ -48,13 +48,13 @@ const Header: React.FC<HeaderProps> = ({ defaultLanguage = 'FR' }) => {
 
           {/* Icons */}
           <div className="flex items-center space-x-3">
-            {/* <button 
+            <button 
               className="px-2 py-1 rounded-full bg-black text-white text-xs font-medium hover:bg-gray-800" 
               onClick={toggleLanguage}
               aria-label="Change language"
             >
               {language}
-            </button> */}
+            </button>
             <button className="p-2 rounded-full hover:bg-gray-100" aria-label="Account">
               <FiUser size={20} />
             </button>

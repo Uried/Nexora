@@ -35,9 +35,10 @@ export default function CartPage() {
                 if (!mounted) return;
                 setServerCart(data);
                 setError(null);
-            } catch (e: any) {
+            } catch (e: unknown) {
                 if (!mounted) return;
-                setError(e?.message || 'Erreur de chargement du panier');
+                const message = e instanceof Error ? e.message : 'Erreur de chargement du panier';
+                setError(message);
             } finally {
                 if (mounted) setLoading(false);
             }
@@ -68,7 +69,7 @@ export default function CartPage() {
             if (!res.ok) throw new Error(res.message || 'Suppression échouée');
             const refreshed = await getCartFull();
             setServerCart(refreshed);
-        } catch (e) {
+        } catch {
             // noop minimal handling for now
         } finally {
             setActioningItemId(null);
@@ -228,7 +229,7 @@ export default function CartPage() {
                         <div className="bg-white p-8 rounded-2xl shadow-sm text-center max-w-md mx-auto">
                             <div className="text-5xl mb-4">🛒</div>
                             <h2 className="text-xl font-semibold mb-2">Votre panier est vide</h2>
-                            <p className="text-gray-500 mb-6">Vous n'avez pas encore ajouté d'articles à votre panier.</p>
+                            <p className="text-gray-500 mb-6">Vous n&#39;avez pas encore ajouté d&#39;articles à votre panier.</p>
                             <Link href="/products">
                                 <button className="bg-black text-white py-3 px-6 rounded-full font-medium">
                                     Découvrir nos produits

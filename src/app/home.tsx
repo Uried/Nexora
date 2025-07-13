@@ -6,10 +6,6 @@ import Image from 'next/image';
 import Profile_pic from '../../src/assets/images/profile-pic.jpg';
 import Banner1 from '../../src/assets/images/banner1.png';
 import Banner2 from '../../src/assets/images/banner2.png';
-import Popular1 from '../../src/assets/images/popular1 (1).jpg';
-import Popular3 from '../../src/assets/images/popular1 (3).jpg';
-import Popular5 from '../../src/assets/images/popular1 (5).jpg';
-import Menbag from '../../src/assets/images/menbag.jpg';
 import Link from 'next/link';
 import { FiSearch, FiShoppingCart } from 'react-icons/fi';
 import { BsHeart, BsHeartFill } from 'react-icons/bs';
@@ -95,7 +91,7 @@ export default function HomePage() {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         setApiCategories(data.categories ?? []);
-      } catch (e) {
+      } catch {
         // silencieux côté UI; on garde la liste statique minimale
       }
     };
@@ -117,7 +113,7 @@ export default function HomePage() {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         setProducts(data.products ?? []);
-      } catch (e) {
+      } catch {
         setErrorProducts("Impossible de charger les produits.");
       } finally {
         setLoadingProducts(false);

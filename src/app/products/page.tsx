@@ -66,7 +66,7 @@ export default function ProductsPage() {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         setProducts(data.products ?? []);
-      } catch (e) {
+      } catch {
         setError("Impossible de charger les produits.");
       } finally {
         setLoading(false);

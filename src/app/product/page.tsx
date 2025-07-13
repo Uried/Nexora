@@ -63,7 +63,7 @@ export default function ProductPage() {
           const data = await res.json();
           setProduct(data.product ?? data);
         }
-      } catch (e) {
+      } catch {
         setError('Impossible de charger le produit.');
       } finally {
         setLoading(false);

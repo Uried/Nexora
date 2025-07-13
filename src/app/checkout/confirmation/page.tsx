@@ -1,7 +1,6 @@
 "use client";
 
 import React from 'react';
-import Link from 'next/link';
 import { FiCheck, FiShoppingBag, FiHome } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import Header from '../../../components/Header';
@@ -26,7 +25,7 @@ export default function OrderConfirmationPage() {
                     
                     <div className="bg-yellow-50 border border-yellow-100 rounded-xl p-4 mb-6 text-left">
                         <p className="text-sm text-gray-700">
-                            <strong>Note:</strong> Si vous n'avez pas été redirigé vers WhatsApp, veuillez nous contacter directement au 
+                            <strong>Note:</strong> Si vous n&#39;avez pas été redirigé vers WhatsApp, veuillez nous contacter directement au 
                             <a href="tel:+237695782165" className="text-black font-medium"> +237 695 782 165</a> pour finaliser votre commande.
                         </p>
                     </div>
@@ -43,7 +42,7 @@ export default function OrderConfirmationPage() {
                             onClick={() => router.push('/')}
                             className="w-full bg-white border border-gray-200 py-3 rounded-full font-medium flex items-center justify-center"
                         >
-                            <FiHome className="mr-2" /> Retour à l'accueil
+                            <FiHome className="mr-2" /> Retour à l&#39;accueil
                         </button>
                     </div>
                 </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 function toHex(buffer: ArrayBuffer): string {
   const bytes = new Uint8Array(buffer);
@@ -12,17 +12,25 @@ function toHex(buffer: ArrayBuffer): string {
   return hex.join('');
 }
 
+type NavLike = Partial<Pick<Navigator, 'userAgent' | 'language'>> & {
+  platform?: string;
+  hardwareConcurrency?: number;
+  deviceMemory?: number;
+};
+
+type ScreenLike = Partial<Pick<Screen, 'colorDepth' | 'width' | 'height'>>;
+
 async function computeFingerprint(): Promise<string> {
   try {
-    const nav = typeof navigator !== 'undefined' ? navigator : ({} as any);
-    const scr = typeof screen !== 'undefined' ? screen : ({} as any);
+    const nav: NavLike = typeof navigator !== 'undefined' ? navigator : {};
+    const scr: ScreenLike = typeof screen !== 'undefined' ? screen : {};
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
     const parts = [
       nav.userAgent || '',
       nav.language || '',
-      (nav as any).platform || '',
-      (nav as any).hardwareConcurrency?.toString?.() || '',
-      (nav as any).deviceMemory?.toString?.() || '',
+      nav.platform || '',
+      nav.hardwareConcurrency?.toString?.() || '',
+      nav.deviceMemory?.toString?.() || '',
       scr.colorDepth?.toString?.() || '',
       scr.width?.toString?.() || '',
       scr.height?.toString?.() || '',
@@ -34,7 +42,7 @@ async function computeFingerprint(): Promise<string> {
       const digest = await crypto.subtle.digest('SHA-256', enc);
       return toHex(digest);
     }
-  } catch (_) {
+  } catch {
     // ignore and fallback below
   }
   // Fallback to random if hashing not available
@@ -51,7 +59,7 @@ export default function ClientInit() {
           localStorage.setItem(KEY, fp);
         });
       }
-    } catch (_) {
+    } catch {
       // localStorage may be unavailable in some contexts
     }
   }, []);

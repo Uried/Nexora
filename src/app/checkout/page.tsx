@@ -1,9 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { FiArrowLeft, FiCheck, FiAlertTriangle } from 'react-icons/fi';
+import React, { useState } from 'react';
+import { FiArrowLeft, FiAlertTriangle } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import Header from '../../components/Header';
 
@@ -16,11 +14,11 @@ export default function CheckoutPage() {
     const router = useRouter();
     
     // Simuler les articles du panier (dans une application réelle, cela viendrait d'un état global ou d'une API)
-    const [cartItems, setCartItems] = useState([
+    const cartItems = [
         { id: 1, name: 'Black Opium', brand: 'Yves Saint Laurent', price: 65000, quantity: 1, image: Popular1 },
         { id: 2, name: 'Coco Mademoiselle', brand: 'Chanel', price: 72000, quantity: 2, image: Popular2 },
         { id: 3, name: 'Loui Martin', brand: 'Louis Vuitton', price: 39000, quantity: 1, image: Popular3 },
-    ]);
+    ];
 
     // États pour le formulaire de commande
     const [formData, setFormData] = useState({
@@ -158,7 +156,7 @@ export default function CheckoutPage() {
                     <FiAlertTriangle className="text-yellow-500 mt-1 mr-3 flex-shrink-0" size={20} />
                     <div>
                         <p className="text-sm text-gray-700">
-                            <strong>Note:</strong> Le paiement en ligne n'est pas encore disponible. Après avoir validé votre commande, 
+                            <strong>Note:</strong> Le paiement en ligne n&#39;est pas encore disponible. Après avoir validé votre commande, 
                             vous serez redirigé vers WhatsApp pour finaliser votre commande avec notre équipe.
                         </p>
                     </div>

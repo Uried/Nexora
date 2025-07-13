@@ -34,7 +34,7 @@ export default function CategoriesPage() {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         setCategories(data.categories ?? []);
-      } catch (e: any) {
+      } catch {
         setError('Impossible de charger les catégories.');
       } finally {
         setLoading(false);

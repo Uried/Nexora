@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -11,11 +11,7 @@ import { addToCart } from '../../lib/cart';
 
 // Import des images de produits (utilisez les mêmes que dans home.tsx pour la cohérence)
 import Popular1 from '../../assets/images/popular1 (1).jpg';
-import Popular2 from '../../assets/images/popular1 (2).jpg';
 import Popular3 from '../../assets/images/popular1 (3).jpg';
-import Popular4 from '../../assets/images/popular1 (4).jpg';
-import Popular5 from '../../assets/images/popular1 (5).jpg';
-import Menbag from '../../assets/images/menbag.jpg';
 
 export default function LikedProductsPage() {
   const router = useRouter();
@@ -135,7 +131,7 @@ export default function LikedProductsPage() {
               <BsHeart size={40} className="text-gray-400" />
             </div>
             <h2 className="text-xl font-bold mb-2">Aucun article favori</h2>
-            <p className="text-gray-500 mb-6">Vous n'avez pas encore ajouté d'articles à vos favoris</p>
+            <p className="text-gray-500 mb-6">Vous n&#39;avez pas encore ajouté d&#39;articles à vos favoris</p>
             <Link 
               href="/products" 
               className="bg-black text-white px-6 py-3 rounded-full font-medium"

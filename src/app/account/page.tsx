@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { FiArrowLeft, FiShoppingCart, FiUser, FiHeart, FiPackage, FiCreditCard, FiMapPin, FiSettings, FiLogOut } from 'react-icons/fi';
+import { FiArrowLeft, FiShoppingCart, FiHeart, FiPackage, FiCreditCard, FiMapPin, FiSettings, FiLogOut } from 'react-icons/fi';
 import Header from '../../components/Header';
 
 // Import d'une image d'avatar (à remplacer par l'image réelle de l'utilisateur)
@@ -196,7 +196,7 @@ export default function AccountPage() {
                     className="h-4 w-4 text-black focus:ring-black border-gray-300 rounded"
                   />
                   <label htmlFor="newsletter" className="ml-2 block text-sm text-gray-700">
-                    S'abonner à la newsletter
+                    S&#39;abonner à la newsletter
                   </label>
                 </div>
                 <div className="flex space-x-3 pt-2">
