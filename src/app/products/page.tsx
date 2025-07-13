@@ -1,54 +1,79 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
-import { FiSearch, FiFilter } from 'react-icons/fi';
+import { FiSearch } from 'react-icons/fi';
 import { BsHeart, BsHeartFill } from 'react-icons/bs';
 import { useRouter } from 'next/navigation';
 import Header from '../../components/Header';
 
-// Import des images
-import Popular1 from '../../assets/images/popular1 (1).jpg';
-import Popular2 from '../../assets/images/popular1 (2).jpg';
-import Popular3 from '../../assets/images/popular1 (3).jpg';
-import Popular4 from '../../assets/images/popular1 (4).jpg';
-import Popular5 from '../../assets/images/popular1 (5).jpg';
-import Popular6 from '../../assets/images/popular1 (6).jpg';
-import Popular7 from '../../assets/images/popular1 (7).jpg';
-import Popular8 from '../../assets/images/popular1 (8).jpg';
-import Menbag from '../../assets/images/menbag.jpg';
-import Bag1 from '../../assets/images/bag1.png';
-import Bag2 from '../../assets/images/bag2.png';
-
 export default function ProductsPage() {
-  const [likedProducts, setLikedProducts] = useState<{ [key: string]: boolean }>({
-    'Black Opium': true,
-    'Coco Mademoiselle': false,
-    'J\'adore': false
-  });
+  const router = useRouter();
+
+  // Interfaces
+  interface Category { id: string; name: string; slug?: string }
+  interface Product {
+    id: string;
+    name: string;
+    price: number;
+    discountPrice?: number;
+    images?: string[];
+    details?: { brand?: string };
+    categories?: Category[];
+  }
+
+  // States
+  const [likedProducts, setLikedProducts] = useState<{ [key: string]: boolean }>({});
   const [selectedCategories, setSelectedCategories] = useState<string[]>(['Toutes les collections']);
+  const [apiCategories, setApiCategories] = useState<Category[]>([]);
+  const [currentCategoryId, setCurrentCategoryId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [productsPerPage] = useState<number>(10);
-  const router = useRouter();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Données des produits
-  const products = [
-    { id: 1, name: 'Black Opium', brand: 'Yves Saint Laurent', price: '65 000 FCFA', image: Popular1, category: 'Floral' },
-    { id: 2, name: 'Coco Mademoiselle', brand: 'Chanel', price: '72 000 FCFA', image: Popular2, category: 'Oriental' },
-    { id: 3, name: 'Loui Martin', brand: 'Louis Vuitton', price: '39 000 FCFA', image: Popular3, category: 'Woody' },
-    { id: 4, name: 'J\'adore', brand: 'Dior', price: '36 000 FCFA', image: Menbag, category: 'Fresh' },
-    { id: 5, name: 'La Vie Est Belle', brand: 'Lancôme', price: '45 000 FCFA', image: Popular4, category: 'Floral' },
-    { id: 6, name: 'Acqua di Gio', brand: 'Giorgio Armani', price: '58 000 FCFA', image: Popular5, category: 'Fresh' },
-    { id: 7, name: 'Bleu de Chanel', brand: 'Chanel', price: '68 000 FCFA', image: Popular6, category: 'Woody' },
-    { id: 8, name: 'Sac à main', brand: 'Gucci', price: '120 000 FCFA', image: Bag1, category: 'Accessoire' },
-    { id: 9, name: 'Sac bandoulière', brand: 'Prada', price: '95 000 FCFA', image: Bag2, category: 'Accessoire' },
-    { id: 10, name: 'Opium Gold', brand: 'Yves Saint Laurent', price: '78 000 FCFA', image: Popular7, category: 'Oriental' },
-    { id: 11, name: 'Sauvage', brand: 'Dior', price: '62 000 FCFA', image: Popular8, category: 'Woody' },
-  ];
+  // Charger les catégories depuis l'API
+  useEffect(() => {
+    const rawBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+    const baseUrl = rawBase.replace(/\/$/, '');
+    const url = `${baseUrl}/api/categories`;
+    const load = async () => {
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        setApiCategories(data.categories ?? []);
+      } catch {
+        // pas bloquant
+      }
+    };
+    load();
+  }, []);
 
-  // Catégories disponibles
-  const categories = ['Toutes les collections', 'Floral', 'Woody', 'Fresh', 'Oriental', 'Accessoire'];
+  // Charger les produits (tous ou par catégorie)
+  useEffect(() => {
+    const rawBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+    const baseUrl = rawBase.replace(/\/$/, '');
+    const url = currentCategoryId
+      ? `${baseUrl}/api/products/category/${currentCategoryId}`
+      : `${baseUrl}/api/products`;
+    const load = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        setProducts(data.products ?? []);
+      } catch (e) {
+        setError("Impossible de charger les produits.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, [currentCategoryId]);
 
   // Fonction pour gérer les likes des produits
   const toggleLike = (productName: string, e: React.MouseEvent) => {
@@ -64,6 +89,7 @@ export default function ProductsPage() {
     if (category === 'Toutes les collections') {
       // Si on clique sur "Toutes les collections", on désélectionne tout le reste
       setSelectedCategories(['Toutes les collections']);
+      setCurrentCategoryId(null);
       return;
     }
 
@@ -76,39 +102,43 @@ export default function ProductsPage() {
       // Mais si c'est la dernière, on revient à "Toutes les collections"
       const filteredSelection = newSelection.filter(cat => cat !== category);
       setSelectedCategories(filteredSelection.length === 0 ? ['Toutes les collections'] : filteredSelection);
+      if (filteredSelection.length === 0) {
+        setCurrentCategoryId(null);
+      } else {
+        const first = filteredSelection[0];
+        const catObj = apiCategories.find(c => c.name === first);
+        setCurrentCategoryId(catObj ? catObj.id : null);
+      }
     } else {
       // Sinon on l'ajoute
-      setSelectedCategories([...newSelection, category]);
+      const updated = [...newSelection, category];
+      setSelectedCategories(updated);
+      const catObj = apiCategories.find(c => c.name === category);
+      setCurrentCategoryId(catObj ? catObj.id : null);
     }
   };
 
-  // Filtrer les produits en fonction des catégories sélectionnées et de la recherche
-  const filteredProducts = products.filter(product => {
-    // Filtre par catégorie
-    const categoryMatch = selectedCategories.includes('Toutes les collections') || 
-                         selectedCategories.includes(product.category);
-    
-    // Filtre par recherche
-    const searchMatch = searchQuery === '' || 
-                       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                       product.brand.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    return categoryMatch && searchMatch;
+  // Filtrer côté client selon la recherche (catégorie gérée côté serveur)
+  const filteredProducts = products.filter((product) => {
+    if (!searchQuery) return true;
+    const name = product.name?.toLowerCase() ?? '';
+    const brand = product.details?.brand?.toLowerCase() ?? '';
+    return name.includes(searchQuery.toLowerCase()) || brand.includes(searchQuery.toLowerCase());
   });
-  
+
   // Pagination
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-  
+
   // Fonction pour changer de page
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
     // Remonter en haut de la page
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-  
+
   // Réinitialiser la pagination quand les filtres changent
   useEffect(() => {
     setCurrentPage(1);
@@ -139,7 +169,7 @@ export default function ProductsPage() {
         {/* Catégories */}
         <div className="mb-6 overflow-x-auto">
           <div className="flex space-x-3 pb-2">
-            {categories.map((category) => (
+            {["Toutes les collections", ...apiCategories.map(c => c.name)].map((category) => (
               <button
                 key={category}
                 onClick={() => toggleCategory(category)}
@@ -152,22 +182,30 @@ export default function ProductsPage() {
         </div>
 
         {/* Grille de produits */}
-        {filteredProducts.length > 0 ? (
+        {loading ? (
+          <div className="flex items-center justify-center py-10 text-gray-600">Chargement des produits...</div>
+        ) : error ? (
+          <div className="flex items-center justify-center py-10 text-red-600">{error}</div>
+        ) : filteredProducts.length > 0 ? (
           <div className="grid grid-cols-2 gap-4">
             {currentProducts.map((product) => (
               <div
                 key={product.id}
                 className="bg-white rounded-2xl p-2 relative shadow-sm cursor-pointer"
-                onClick={() => router.push('/product')}
+                onClick={() => router.push(`/product?id=${product.id}`)}
               >
                 <div className="relative w-full aspect-square mb-3 flex items-center justify-center overflow-hidden rounded-xl">
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    className="object-cover w-full h-full"
-                    width={150}
-                    height={150}
-                  />
+                  {product.images && product.images.length > 0 ? (
+                    <Image
+                      src={product.images[0]}
+                      alt={product.name}
+                      className="object-cover w-full h-full"
+                      width={150}
+                      height={150}
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200" />
+                  )}
                   <button
                     className="absolute top-2 right-2 bg-white rounded-full p-1.5 shadow-sm"
                     onClick={(e) => toggleLike(product.name, e)}
@@ -180,20 +218,24 @@ export default function ProductsPage() {
                   </button>
                   
                   {/* Badge de catégorie */}
-                  <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
-                    {product.category}
-                  </div>
+                  {product.categories && product.categories.length > 0 && (
+                    <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
+                      {product.categories[0].name}
+                    </div>
+                  )}
                 </div>
                 <div className="font-semibold">
-                  <h4 className="text-sm">{product.brand}</h4>
+                  <h4 className="text-sm">{product.details?.brand || product.categories?.[0]?.name || '—'}</h4>
                   <p className="text-xs text-gray-700">{product.name}</p>
-                  <p className="text-gray-500 text-xs mb-2">{product.price}</p>
+                  <p className="text-gray-500 text-xs mb-2">
+                    {((product.discountPrice && product.discountPrice > 0) ? product.discountPrice : product.price).toLocaleString('fr-FR')} FCFA
+                  </p>
                 </div>
                 <button
                   className="absolute bottom-2 right-2 bg-black text-white rounded-full p-2 shadow-sm"
                   onClick={(e) => {
                     e.stopPropagation();
-                    router.push('/product');
+                    router.push(`/product?id=${product.id}`);
                   }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">

@@ -1,61 +1,77 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FiArrowLeft, FiMinus, FiPlus, FiTrash2, FiX, FiAlertTriangle } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import Header from '../../components/Header';
-
-// Import des images
-import Popular1 from '../../assets/images/popular1 (1).jpg';
-import Popular2 from '../../assets/images/popular1 (2).jpg';
-import Popular3 from '../../assets/images/popular1 (3).jpg';
+import { getCartFull, clearCart as apiClearCart, removeCartItem, updateCartItemQuantity, type ServerCartItem, type ServerCartResponse } from '../../lib/cart';
 
 export default function CartPage() {
     const router = useRouter();
-    const [cartItems, setCartItems] = useState([
-        { id: 1, name: 'Black Opium', brand: 'Yves Saint Laurent', price: 65000, quantity: 1, image: Popular1 },
-        { id: 2, name: 'Coco Mademoiselle', brand: 'Chanel', price: 72000, quantity: 2, image: Popular2 },
-        { id: 3, name: 'Loui Martin', brand: 'Louis Vuitton', price: 39000, quantity: 1, image: Popular3 },
-    ]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [serverCart, setServerCart] = useState<ServerCartResponse | null>(null);
 
     // États pour gérer les confirmations
-    const [itemToDelete, setItemToDelete] = useState<number | null>(null);
+    const [itemToDelete, setItemToDelete] = useState<string | null>(null);
     const [showClearCartConfirm, setShowClearCartConfirm] = useState(false);
+    const [actioningItemId, setActioningItemId] = useState<string | null>(null);
+    const [clearing, setClearing] = useState(false);
 
     // Fonction pour formater le prix en FCFA
     const formatPrice = (price: number) => {
         return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " FCFA";
     };
 
-    // Fonction pour augmenter la quantité d'un article
-    const increaseQuantity = (id: number) => {
-        setCartItems(prevItems =>
-            prevItems.map(item =>
-                item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-            )
-        );
-    };
+    // Charger le panier depuis l'API
+    useEffect(() => {
+        let mounted = true;
+        (async () => {
+            try {
+                setLoading(true);
+                const data = await getCartFull();
+                if (!mounted) return;
+                setServerCart(data);
+                setError(null);
+            } catch (e: any) {
+                if (!mounted) return;
+                setError(e?.message || 'Erreur de chargement du panier');
+            } finally {
+                if (mounted) setLoading(false);
+            }
+        })();
+        return () => { mounted = false; };
+    }, []);
 
-    // Fonction pour diminuer la quantité d'un article
-    const decreaseQuantity = (id: number) => {
-        setCartItems(prevItems =>
-            prevItems.map(item =>
-                item.id === id && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item
-            )
-        );
-    };
+    // Dérivations utiles
+    const items: ServerCartItem[] = useMemo(() => serverCart?.cart?.items || [], [serverCart]);
+    const subtotal: number = useMemo(() => {
+        if (!items.length) return 0;
+        return items.reduce((acc, it) => acc + (typeof it.lineTotal === 'number' ? it.lineTotal! : (it.priceAtAdd ?? it.productId.discountPrice ?? it.productId.price) * it.quantity), 0);
+    }, [items]);
+    const shippingFee = 5000;
+    const total = subtotal + (items.length ? shippingFee : 0);
 
     // Fonction pour demander confirmation avant de supprimer un article
-    const confirmRemoveItem = (id: number) => {
+    const confirmRemoveItem = (id: string) => {
         setItemToDelete(id);
     };
 
     // Fonction pour supprimer un article du panier après confirmation
-    const removeItem = () => {
-        if (itemToDelete !== null) {
-            setCartItems(prevItems => prevItems.filter(item => item.id !== itemToDelete));
+    const removeItem = async () => {
+        if (!itemToDelete) return;
+        try {
+            setActioningItemId(itemToDelete);
+            const res = await removeCartItem(itemToDelete);
+            if (!res.ok) throw new Error(res.message || 'Suppression échouée');
+            const refreshed = await getCartFull();
+            setServerCart(refreshed);
+        } catch (e) {
+            // noop minimal handling for now
+        } finally {
+            setActioningItemId(null);
             setItemToDelete(null);
         }
     };
@@ -65,14 +81,30 @@ export default function CartPage() {
         setItemToDelete(null);
     };
 
-    // Calculer le sous-total
-    const subtotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-
-    // Frais de livraison
-    const shippingFee = 5000;
-
-    // Total
-    const total = subtotal + shippingFee;
+    // Handlers quantité
+    const increaseQty = async (item: ServerCartItem) => {
+        try {
+            setActioningItemId(item._id);
+            const res = await updateCartItemQuantity(item._id, item.quantity + 1);
+            if (!res.ok) throw new Error(res.message);
+            const refreshed = await getCartFull();
+            setServerCart(refreshed);
+        } finally {
+            setActioningItemId(null);
+        }
+    };
+    const decreaseQty = async (item: ServerCartItem) => {
+        if (item.quantity <= 1) return;
+        try {
+            setActioningItemId(item._id);
+            const res = await updateCartItemQuantity(item._id, item.quantity - 1);
+            if (!res.ok) throw new Error(res.message);
+            const refreshed = await getCartFull();
+            setServerCart(refreshed);
+        } finally {
+            setActioningItemId(null);
+        }
+    };
 
     return (
         <>
@@ -89,7 +121,7 @@ export default function CartPage() {
                         </button>
                         <h1 className="text-2xl font-bold">Mon Panier</h1>
                     </div>
-                    {cartItems.length > 0 && (
+                    {items.length > 0 && (
                         <button
                             onClick={() => setShowClearCartConfirm(true)}
                             className="text-red-500 text-sm font-medium flex items-center"
@@ -100,45 +132,50 @@ export default function CartPage() {
                     )}
                 </div>
 
-                {cartItems.length > 0 ? (
+                {loading ? (
+                    <div className="flex items-center justify-center py-16">
+                        <div className="bg-white px-6 py-4 rounded-xl shadow-sm">Chargement du panier...</div>
+                    </div>
+                ) : error ? (
+                    <div className="flex items-center justify-center py-16">
+                        <div className="bg-white px-6 py-4 rounded-xl shadow-sm text-red-600">{error}</div>
+                    </div>
+                ) : items.length > 0 ? (
                     <>
                         {/* Liste des articles */}
                         <div className="space-y-4 mb-8">
-                            {cartItems.map(item => (
-                                <div key={item.id} className="bg-white rounded-2xl px-2 py-2 space-y-2 shadow-sm">
+                            {items.map(item => (
+                                <div key={item._id} className="bg-white rounded-2xl px-2 py-2 space-y-2 shadow-sm">
                                     <div className="flex items-center">
                                         <div className="relative w-20 h-20 rounded-xl overflow-hidden mr-3">
-                                            <Image
-                                                src={item.image}
-                                                alt={item.name}
-                                                fill
-                                                className="object-cover"
-                                            />
+                                            {item.productId?.images?.[0] ? (
+                                                <Image
+                                                    src={item.productId.images[0]}
+                                                    alt={item.productId.name}
+                                                    fill
+                                                    className="object-cover"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full bg-gray-100" />
+                                            )}
                                         </div>
                                         <div className="flex-1">
-                                            <h3 className="font-semibold">{item.name}</h3>
-                                            <p className="text-gray-500 text-sm">{item.brand}</p>
-                                            <p className="font-semibold mt-1">{formatPrice(item.price)}</p>
+                                            <h3 className="font-semibold">{item.productId.name}</h3>
+                                            <p className="text-gray-500 text-sm">{item.productId.details?.brand || ''}</p>
+                                            <p className="font-semibold mt-1">{formatPrice(item.priceAtAdd ?? item.productId.discountPrice ?? item.productId.price)}</p>
                                         </div>
                                         <div className="flex flex-col space-y-4 items-end">
                                             <div className="flex items-center border border-gray-200 rounded-full">
-                                                <button
-                                                    className="px-2"
-                                                    onClick={() => decreaseQuantity(item.id)}
-                                                    disabled={item.quantity <= 1}
-                                                >
+                                                <button className="px-2" onClick={() => decreaseQty(item)} disabled={item.quantity <= 1 || actioningItemId === item._id}>
                                                     <FiMinus size={14} />
                                                 </button>
-                                                <span className="px-3 text-sm">{item.quantity}</span>
-                                                <button
-                                                    className="px-2 py-1"
-                                                    onClick={() => increaseQuantity(item.id)}
-                                                >
+                                                <span className="px-3 text-sm">{actioningItemId === item._id ? '...' : item.quantity}</span>
+                                                <button className="px-2 py-1" onClick={() => increaseQty(item)} disabled={actioningItemId === item._id}>
                                                     <FiPlus size={14} />
                                                 </button>
                                             </div>
                                             <button
-                                                onClick={() => confirmRemoveItem(item.id)}
+                                                onClick={() => confirmRemoveItem(item._id)}
                                                 className="text-gray-400 hover:text-red-500 mb-2 mt-2   "
                                             >
                                                 <FiTrash2 size={18} />
@@ -159,7 +196,7 @@ export default function CartPage() {
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="text-gray-500">Frais de livraison</span>
-                                    <span>{formatPrice(shippingFee)}</span>
+                                    <span>{formatPrice(items.length ? shippingFee : 0)}</span>
                                 </div>
                                 <div className="border-t border-gray-100 pt-3 mt-3">
                                     <div className="flex justify-between font-semibold">
@@ -261,13 +298,21 @@ export default function CartPage() {
                                 Annuler
                             </button>
                             <button
-                                onClick={() => {
-                                    setCartItems([]);
-                                    setShowClearCartConfirm(false);
+                                onClick={async () => {
+                                    try {
+                                        setClearing(true);
+                                        const res = await apiClearCart();
+                                        if (!res.ok) throw new Error(res.message);
+                                        const refreshed = await getCartFull();
+                                        setServerCart(refreshed);
+                                    } finally {
+                                        setClearing(false);
+                                        setShowClearCartConfirm(false);
+                                    }
                                 }}
                                 className="flex-1 py-2 bg-red-500 text-white rounded-full font-medium"
                             >
-                                Vider
+                                {clearing ? 'Vidage...' : 'Vider'}
                             </button>
                         </div>
                     </div>

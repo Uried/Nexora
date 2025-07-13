@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { FiArrowLeft, FiShoppingCart } from 'react-icons/fi';
 import { BsHeart, BsHeartFill } from 'react-icons/bs';
 import Header from '../../components/Header';
+import { addToCart } from '../../lib/cart';
 
 // Import des images de produits (utilisez les mêmes que dans home.tsx pour la cohérence)
 import Popular1 from '../../assets/images/popular1 (1).jpg';
@@ -44,6 +45,16 @@ export default function LikedProductsPage() {
     setLikedProducts(prev => prev.filter(product => product.id !== productId));
   };
 
+  const parsePriceToNumber = (priceLabel: string): number => {
+    // Ex: "65 000 FCFA" -> 65000 ; handles commas as decimal separator as well
+    const cleaned = priceLabel
+      .replace(/[^0-9,\.\s]/g, '') // keep digits, comma, dot, spaces
+      .replace(/\s+/g, '');
+    const normalized = cleaned.replace(/,(?=\d{2}$)/, '.');
+    const num = parseFloat(normalized.replace(/[^0-9.]/g, ''));
+    return Number.isFinite(num) ? num : 0;
+  };
+
   return (
     <>
       <Header defaultLanguage="FR" />
@@ -74,7 +85,7 @@ export default function LikedProductsPage() {
               <div 
                 key={product.id}
                 className="bg-white rounded-2xl p-2 relative shadow-sm cursor-pointer" 
-                onClick={() => router.push('/product')}
+                onClick={() => router.push(`/product?id=${product.id}`)}
               >
                 <div className="relative w-full aspect-square mb-3 flex items-center justify-center overflow-hidden rounded-xl">
                   <Image
@@ -103,7 +114,9 @@ export default function LikedProductsPage() {
                   className="absolute bottom-4 right-4 bg-black text-white rounded-full p-2 shadow-sm"
                   onClick={(e) => {
                     e.stopPropagation();
-                    // Ajouter au panier (à implémenter)
+                    // Ajouter au panier
+                    const priceAtAdd = parsePriceToNumber(product.price);
+                    addToCart(String(product.id), 1, priceAtAdd);
                   }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+
 import Image from 'next/image';
 import Profile_pic from '../../src/assets/images/profile-pic.jpg';
 import Banner1 from '../../src/assets/images/banner1.png';
@@ -17,6 +18,25 @@ import { useRouter } from "next/navigation";
 export default function HomePage() {
   // État pour gérer les catégories sélectionnées
   const [selectedCategories, setSelectedCategories] = useState<string[]>(['Toutes les collections']);
+  // État pour les catégories récupérées depuis l'API
+  interface Category { id: string; name: string; slug?: string }
+  const [apiCategories, setApiCategories] = useState<Category[]>([]);
+
+  // Produits (API)
+  interface Product {
+    id: string;
+    name: string;
+    description?: string;
+    price: number;
+    discountPrice?: number;
+    images?: string[];
+    isTrending?: boolean;
+  }
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loadingProducts, setLoadingProducts] = useState<boolean>(true);
+  const [errorProducts, setErrorProducts] = useState<string | null>(null);
+  const [currentCategoryId, setCurrentCategoryId] = useState<string | null>(null);
+
   // État pour gérer les produits aimés
   const [likedProducts, setLikedProducts] = useState<{ [key: string]: boolean }>({ 'Black Opium': true });
   // État pour gérer le nombre d'articles dans le panier
@@ -64,6 +84,48 @@ export default function HomePage() {
     return () => clearInterval(interval);
   }, [bannerData.length]);
 
+  // Charger les catégories depuis l'API
+  useEffect(() => {
+    const rawBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+    const baseUrl = rawBase.replace(/\/$/, '');
+    const url = `${baseUrl}/api/categories`;
+    const load = async () => {
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        setApiCategories(data.categories ?? []);
+      } catch (e) {
+        // silencieux côté UI; on garde la liste statique minimale
+      }
+    };
+    load();
+  }, []);
+
+  // Charger les produits depuis l'API (tous ou par catégorie)
+  useEffect(() => {
+    const rawBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+    const baseUrl = rawBase.replace(/\/$/, '');
+    const url = currentCategoryId
+      ? `${baseUrl}/api/products/category/${currentCategoryId}`
+      : `${baseUrl}/api/products`;
+    const load = async () => {
+      setLoadingProducts(true);
+      setErrorProducts(null);
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        setProducts(data.products ?? []);
+      } catch (e) {
+        setErrorProducts("Impossible de charger les produits.");
+      } finally {
+        setLoadingProducts(false);
+      }
+    };
+    load();
+  }, [currentCategoryId]);
+
   // Fonction pour gérer les likes des produits
   const toggleLike = (productName: string) => {
     setLikedProducts(prev => ({
@@ -77,6 +139,7 @@ export default function HomePage() {
     if (category === 'Toutes les collections') {
       // Si on clique sur "Toutes les collections", on désélectionne tout le reste
       setSelectedCategories(['Toutes les collections']);
+      setCurrentCategoryId(null); // revient à tous les produits
       return;
     }
 
@@ -89,9 +152,21 @@ export default function HomePage() {
       // Mais si c'est la dernière, on revient à "Toutes les collections"
       const filteredSelection = newSelection.filter(cat => cat !== category);
       setSelectedCategories(filteredSelection.length === 0 ? ['Toutes les collections'] : filteredSelection);
+      if (filteredSelection.length === 0) {
+        setCurrentCategoryId(null);
+      } else {
+        // Choisir la première catégorie restante pour filtrer
+        const first = filteredSelection[0];
+        const catObj = apiCategories.find(c => c.name === first);
+        setCurrentCategoryId(catObj ? catObj.id : null);
+      }
     } else {
       // Sinon on l'ajoute
-      setSelectedCategories([...newSelection, category]);
+      const updated = [...newSelection, category];
+      setSelectedCategories(updated);
+      // Utiliser la catégorie nouvellement cliquée pour filtrer
+      const catObj = apiCategories.find(c => c.name === category);
+      setCurrentCategoryId(catObj ? catObj.id : null);
     }
   };
 
@@ -105,7 +180,7 @@ export default function HomePage() {
             <Image src={Profile_pic} alt="Profile" width={40} height={40} onClick={() => router.push('/account')} />
           </div>
           <div>
-            <h2 className="text-xl font-semibold">Salut, Mina!</h2>
+            <h2 className="text-xl font-semibold">Salut!</h2>
             <p className="text-gray-500 text-base">Bon retour</p>
           </div>
         </div>
@@ -137,7 +212,7 @@ export default function HomePage() {
         </div>
         <button 
           className="bg-black text-white rounded-full p-3"
-          onClick={() => router.push('/liked')}
+          // onClick={() => router.push('/liked')}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#fff" fillRule="evenodd" d="M5.722 6.8c-.923 1.176-1.256 2.281-1.22 3.31c.038 1.045.458 2.068 1.136 3.06c1.367 1.996 3.694 3.737 5.609 5.09c.452.32 1.05.32 1.502 0c1.93-1.36 4.256-3.1 5.62-5.095c.676-.99 1.093-2.012 1.129-3.055c.034-1.029-.3-2.134-1.225-3.31c-1.62-1.711-3.953-1.66-5.541-.278a1.125 1.125 0 0 1-1.468 0c-1.589-1.381-3.92-1.433-5.542.279m-.743-.669c2.016-2.145 4.97-2.077 6.941-.363a.12.12 0 0 0 .078.027q.05-.002.077-.027c1.97-1.714 4.928-1.783 6.942.364l.015.015l.013.017c1.059 1.34 1.496 2.677 1.452 3.98c-.043 1.292-.558 2.495-1.303 3.585c-1.48 2.164-3.953 3.998-5.868 5.349a2.3 2.3 0 0 1-2.657-.001c-1.9-1.344-4.374-3.178-5.856-5.343c-.746-1.09-1.264-2.295-1.31-3.588c-.046-1.304.389-2.641 1.448-3.982l.013-.017z" clipRule="evenodd" /></svg>
         </button>
@@ -179,19 +254,7 @@ export default function HomePage() {
         </Link>
       </div>
       <div className="flex space-x-3 mb-6 overflow-x-auto pb-2">
-        {[
-          'Toutes les collections',
-          'Florale',
-          'Orientale',
-          'Boisée',
-          'Fougère',
-          'Chyprée',
-          'Hespéridée',
-          'Aromatique',
-          'Gourmande',
-          'Aquatique',
-          'Eau de Cologne'
-        ].map((category) => (
+        {['Toutes les collections', ...apiCategories.map(c => c.name)].map((category) => (
           <button
             key={category}
             onClick={() => toggleCategory(category)}
@@ -202,174 +265,66 @@ export default function HomePage() {
         ))}
       </div>
 
-      {/* Popular Perfumes */}
+      {/* Popular Perfumes / Produits tendance */}
       <div className="mb-6">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold">Articles populaires</h3>
+          <h3 className="text-lg font-semibold">Produits tendance</h3>
           <Link href="/products" className="text-gray-500 text-sm">
             Voir tout
           </Link>
         </div>
-
+        {loadingProducts && (
+          <p className="text-gray-600">Chargement des produits...</p>
+        )}
+        {errorProducts && (
+          <p className="text-red-600">{errorProducts}</p>
+        )}
 
         {/* Product Grid */}
         <div className="grid grid-cols-2 gap-4">
-          {/* Product 1 */}
-          <div 
-            className="bg-white rounded-2xl p-2 relative shadow-sm cursor-pointer" 
-            onClick={() => router.push('/product')}
-          >
-            <div className="relative w-full aspect-square mb-3 flex items-center justify-center overflow-hidden rounded-xl">
-              <Image
-                src={Popular1}
-                alt="La Nuit Tresor"
-                className="object-cover w-full h-full"
-                width={150}
-                height={150}
-              />
-              <button
-                className="absolute top-2 right-2 bg-white rounded-full p-1.5 shadow-sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleLike('La Nuit Tresor');
-                }}
+          {(currentCategoryId ? products : products.filter(p => p.isTrending)).slice(0, 6).map((p) => {
+            const img = (p.images && p.images.length > 0) ? p.images[0] : null;
+            const price = p.discountPrice && p.discountPrice > 0 ? p.discountPrice : p.price;
+            return (
+              <div 
+                key={p.id}
+                className="bg-white rounded-2xl p-2 relative shadow-sm cursor-pointer"
+                onClick={() => router.push(`/product?id=${p.id}`)}
               >
-                {likedProducts['La Nuit Tresor'] ?
-                  <BsHeartFill size={16} color="red" /> :
-                  <BsHeart size={16} color="black" />
-                }
-              </button>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className='font-semibold'>
-                <h4 className="text-sm">Jumeirah</h4>
-                <p className="text-gray-500 text-xs mb-2">32 500 FCFA</p>
-              </div>
-              <button 
-                className="bg-black text-white rounded-full p-2 shadow-sm"
-                onClick={() => router.push('/product')}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M3.977 9.84A2 2 0 0 1 5.971 8h12.058a2 2 0 0 1 1.994 1.84l.803 10A2 2 0 0 1 18.833 22H5.167a2 2 0 0 1-1.993-2.16z" /><path d="M16 11V6a4 4 0 0 0-4-4v0a4 4 0 0 0-4 4v5" /></g></svg>
-              </button>
-            </div>
-          </div>
-
-          {/* Product 2 */}
-          <div 
-            className="bg-white rounded-2xl p-2 relative shadow-sm cursor-pointer" 
-            onClick={() => router.push('/product')}
-          >
-            <div className="relative w-full aspect-square mb-3 flex items-center justify-center overflow-hidden rounded-xl">
-              <Image
-                src={Popular5}
-                alt="Black Opium"
-                className="object-cover w-full h-full"
-                width={150}
-                height={150}
-              />
-              <button
-                className="absolute top-2 right-2 bg-white rounded-full p-1.5 shadow-sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleLike('Black Opium');
-                }}
-              >
-                {likedProducts['Black Opium'] ?
-                  <BsHeartFill size={16} color="red" /> :
-                  <BsHeart size={16} color="black" />
-                }
-              </button>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className='font-semibold'>
-                <h4 className="text-sm">Loui Martin Arthur</h4>
-                <div className="flex items-baseline gap-3">
-                  <p className="text-gray-500 text-xs mb-2">32 500 FCFA</p>
+                <div className="relative w-full aspect-square mb-3 flex items-center justify-center overflow-hidden rounded-xl">
+                  {img ? (
+                    <Image src={img} alt={p.name} className="object-cover w-full h-full" width={150} height={150} />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200" />
+                  )}
+                  <button
+                    className="absolute top-2 right-2 bg-white rounded-full p-1.5 shadow-sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleLike(p.name);
+                    }}
+                  >
+                    {likedProducts[p.name] ?
+                      <BsHeartFill size={16} color="red" /> :
+                      <BsHeart size={16} color="black" />
+                    }
+                  </button>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className='font-semibold'>
+                    <h4 className="text-sm line-clamp-1">{p.name}</h4>
+                    <p className="text-gray-500 text-xs mb-2">{price.toLocaleString('fr-FR')} FCFA</p>
+                  </div>
+                  <button 
+                    className="bg-black text-white rounded-full p-2 shadow-sm"
+                    onClick={() => router.push(`/product?id=${p.id}`)}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M3.977 9.84A2 2 0 0 1 5.971 8h12.058a2 2 0 0 1 1.994 1.84l.803 10A2 2 0 0 1 18.833 22H5.167a2 2 0 0 1-1.993-2.16z" /><path d="M16 11V6a4 4 0 0 0-4-4v0a4 4 0 0 0-4 4v5" /></g></svg>
+                  </button>
                 </div>
               </div>
-              <button 
-                className="bg-black text-white rounded-full p-2 shadow-sm"
-                onClick={() => router.push('/product')}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M3.977 9.84A2 2 0 0 1 5.971 8h12.058a2 2 0 0 1 1.994 1.84l.803 10A2 2 0 0 1 18.833 22H5.167a2 2 0 0 1-1.993-2.16z" /><path d="M16 11V6a4 4 0 0 0-4-4v0a4 4 0 0 0-4 4v5" /></g></svg>
-              </button>
-            </div>
-          </div>
-
-          {/* Product 3 */}
-          <div 
-            className="bg-white rounded-2xl p-2 relative shadow-sm cursor-pointer" 
-            onClick={() => router.push('/product')}
-          >
-            <div className="relative w-full aspect-square mb-3 flex items-center justify-center overflow-hidden rounded-xl">
-              <Image
-                src={Popular3}
-                alt="Coco Mademoiselle"
-                className="object-cover w-full h-full"
-                width={150}
-                height={150}
-              />
-              <button
-                className="absolute top-2 right-2 bg-white rounded-full p-1.5 shadow-sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleLike('Coco Mademoiselle');
-                }}
-              >
-                {likedProducts['Coco Mademoiselle'] ?
-                  <BsHeartFill size={16} color="red" /> :
-                  <BsHeart size={16} color="black" />
-                }
-              </button>
-            </div>
-           <div className='font-semibold'>
-           <h4 className="text-sm">Loui Martin</h4>
-           <p className="text-gray-500 text-xs mb-2">39 000 FCFA</p>
-           </div>
-            <button onClick={() => router.push('/product')} className="absolute bottom-4 right-4 bg-black text-white rounded-full p-2 shadow-sm">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M3.977 9.84A2 2 0 0 1 5.971 8h12.058a2 2 0 0 1 1.994 1.84l.803 10A2 2 0 0 1 18.833 22H5.167a2 2 0 0 1-1.993-2.16z" /><path d="M16 11V6a4 4 0 0 0-4-4v0a4 4 0 0 0-4 4v5" /></g></svg>
-            </button>
-          </div>
-
-          {/* Product 4 */}
-          <div 
-            className="bg-white rounded-2xl p-2 relative shadow-sm cursor-pointer" 
-            onClick={() => router.push('/product')}
-          >
-            <div className="relative w-full aspect-square mb-3 flex items-center justify-center overflow-hidden rounded-xl">
-              <Image
-                src={Menbag}
-                alt="J'adore"
-                className="object-cover w-full h-full"
-                width={150}
-                height={150}
-              />
-              <button
-                className="absolute top-2 right-2 bg-white rounded-full p-1.5 shadow-sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleLike('J\'adore');
-                }}
-              >
-                {likedProducts['J\'adore'] ?
-                  <BsHeartFill size={16} color="red" /> :
-                  <BsHeart size={16} color="black" />
-                }
-              </button>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className='font-semibold '>
-                <h4 className="text-sm capitalize">Louis Vuitton</h4>
-                <p className="text-gray-500 text-xs mb-2">36 000 FCFA</p>
-              </div>
-              <button 
-                className="bg-black text-white rounded-full p-2 shadow-sm"
-                onClick={() => router.push('/product')}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M3.977 9.84A2 2 0 0 1 5.971 8h12.058a2 2 0 0 1 1.994 1.84l.803 10A2 2 0 0 1 18.833 22H5.167a2 2 0 0 1-1.993-2.16z" /><path d="M16 11V6a4 4 0 0 0-4-4v0a4 4 0 0 0-4 4v5" /></g></svg>
-              </button>
-            </div>
-          </div>
+            );
+          })}
         </div>
       </div>
     </div>
