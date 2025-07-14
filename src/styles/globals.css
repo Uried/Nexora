@@ -18,6 +18,12 @@
     --foreground: #ededed;
   }
 }
+.nextjs-toastify-toast-container,
+.nextjs-dev-overlay {
+  display: none !important;
+}
+
+
 
 body {
   background: var(--background);
