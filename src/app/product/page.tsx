@@ -4,14 +4,11 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FiMinus, FiPlus, FiArrowLeft } from 'react-icons/fi';
-import { BsHeart, BsHeartFill } from 'react-icons/bs';
 import Header from '../../components/Header';
 import Popular1 from '../../assets/images/popular1 (1).jpg';
 
 export default function ProductPage() {
   const [quantity, setQuantity] = useState(1);
-  const [isLiked, setIsLiked] = useState(false);
-
   const increaseQuantity = () => {
     setQuantity(prev => prev + 1);
   };
@@ -20,10 +17,6 @@ export default function ProductPage() {
     if (quantity > 1) {
       setQuantity(prev => prev - 1);
     }
-  };
-
-  const toggleLike = () => {
-    setIsLiked(!isLiked);
   };
 
   return (
@@ -84,7 +77,7 @@ export default function ProductPage() {
           {/* Product Description */}
           <p className="text-gray-500 mb-8">
             Lancé récemment en 2025, le parfum Black Opium de Versace offre un équilibre délicat
-            d'agrumes épicés pour créer un parfum idéal au quotidien
+            d&apos;agrumes épicés pour créer un parfum idéal au quotidien
           </p>
 
           {/* Quantity and Add to Cart */}
@@ -105,7 +98,7 @@ export default function ProductPage() {
               </button>
             </div>
             <button className="bg-black text-white rounded-full px-6 py-3 flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><circle cx="9.549" cy="19.049" r="1.701"/><circle cx="16.96" cy="19.049" r="1.701"/><path d="m5.606 5.555l2.01 6.364c.309.978.463 1.467.76 1.829c.26.32.599.567.982.72c.435.173.947.173 1.973.173h3.855c1.026 0 1.538 0 1.972-.173c.384-.153.722-.4.983-.72c.296-.362.45-.851.76-1.829l.409-1.296l.24-.766l.331-1.05a2.5 2.5 0 0 0-2.384-3.252zm0 0l-.011-.037a7 7 0 0 0-.14-.42a2.92 2.92 0 0 0-2.512-1.84C2.84 3.25 2.727 3.25 2.5 3.25"/></g></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="#fff" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"><circle cx="9.549" cy="19.049" r="1.701"/><circle cx="16.96" cy="19.049" r="1.701"/><path d="m5.606 5.555l2.01 6.364c.309.978.463 1.467.76 1.829c.26.32.599.567.982.72c.435.173.947.173 1.973.173h3.855c1.026 0 1.538 0 1.972-.173c.384-.153.722-.4.983-.72c.296-.362.45-.851.76-1.829l.409-1.296l.24-.766l.331-1.05a2.5 2.5 0 0 0-2.384-3.252zm0 0l-.011-.037a7 7 0 0 0-.14-.42a2.92 2.92 0 0 0-2.512-1.84C2.84 3.25 2.727 3.25 2.5 3.25"/></g></svg>
               Ajouter au panier
             </button>
           </div>

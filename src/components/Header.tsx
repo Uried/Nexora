@@ -3,15 +3,14 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FiMenu, FiSearch, FiUser } from 'react-icons/fi';
+import { FiMenu, FiUser } from 'react-icons/fi';
 import Logo from '../assets/images/logo.png';
 
 interface HeaderProps {
-  cartItemCount?: number;
   defaultLanguage?: 'FR' | 'EN';
 }
 
-const Header: React.FC<HeaderProps> = ({ cartItemCount = 0, defaultLanguage = 'FR' }) => {
+const Header: React.FC<HeaderProps> = ({ defaultLanguage = 'FR' }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [language, setLanguage] = useState<'FR' | 'EN'>(defaultLanguage);
   

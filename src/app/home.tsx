@@ -6,9 +6,7 @@ import Profile_pic from '../../src/assets/images/profile-pic.jpg';
 import Banner1 from '../../src/assets/images/banner1.png';
 import Banner2 from '../../src/assets/images/banner2.png';
 import Popular1 from '../../src/assets/images/popular1 (1).jpg';
-import Popular2 from '../../src/assets/images/popular1 (2).jpg';
 import Popular3 from '../../src/assets/images/popular1 (3).jpg';
-import Popular4 from '../../src/assets/images/popular1 (4).jpg';
 import Popular5 from '../../src/assets/images/popular1 (5).jpg';
 import Menbag from '../../src/assets/images/menbag.jpg';
 import Link from 'next/link';
@@ -22,7 +20,7 @@ export default function HomePage() {
   // État pour gérer les produits aimés
   const [likedProducts, setLikedProducts] = useState<{ [key: string]: boolean }>({ 'Black Opium': true });
   // État pour gérer le nombre d'articles dans le panier
-  const [cartItemCount, setCartItemCount] = useState<number>(3);
+  const [cartItemCount] = useState<number>(3);
   const router = useRouter();
 
   // États pour le carrousel de bannières
