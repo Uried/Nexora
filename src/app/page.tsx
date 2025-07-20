@@ -1,9 +1,13 @@
-import Image from "next/image";
+import HomePage from "./home";
+import Header from "../components/Header";
 
 export default function Home() {
   return (
-    <div>
-   
-    </div>
+    <>
+      <Header defaultLanguage="FR" />
+      <div className="pt-16">
+        <HomePage />
+      </div>
+    </>
   );
 }

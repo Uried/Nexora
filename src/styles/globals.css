@@ -1,5 +1,70 @@
 @import "tailwindcss";
 
+/* Import des polices Noyh depuis les assets */
+@font-face {
+  font-family: 'Noyh-Regular';
+  src: url('../assets/fonts/Noyh-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Noyh-Bold';
+  src: url('../assets/fonts/Noyh-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Noyh-Medium';
+  src: url('../assets/fonts/Noyh-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Noyh-Light';
+  src: url('../assets/fonts/Noyh-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Noyh-SemiLight';
+  src: url('../assets/fonts/Noyh-SemiLight.ttf') format('truetype');
+  font-weight: 350;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Noyh-SemiLightItalic';
+  src: url('../assets/fonts/Noyh-SemiLightItalic.ttf') format('truetype');
+  font-weight: 350;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Noyh-Thin';
+  src: url('../assets/fonts/Noyh-Thin.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Noyh-ThinItalic';
+  src: url('../assets/fonts/Noyh-ThinItalic.ttf') format('truetype');
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -23,10 +88,42 @@
   display: none !important;
 }
 
+.noyh {
+  font-family: 'Noyh-Regular', Arial, Helvetica, sans-serif;
+}
+
+.noyh-bold {
+  font-family: 'Noyh-Bold', Arial, Helvetica, sans-serif;
+}
+
+.noyh-medium {
+  font-family: 'Noyh-Medium', Arial, Helvetica, sans-serif;
+}
+
+.noyh-light {
+  font-family: 'Noyh-Light', Arial, Helvetica, sans-serif;
+}
+
+.noyh-semilight {
+  font-family: 'Noyh-SemiLight', Arial, Helvetica, sans-serif;
+}
+
+.noyh-semilight-italic {
+  font-family: 'Noyh-SemiLightItalic', Arial, Helvetica, sans-serif;
+}
+
+.noyh-thin {
+  font-family: 'Noyh-Thin', Arial, Helvetica, sans-serif;
+}
+
+.noyh-thin-italic {
+  font-family: 'Noyh-ThinItalic', Arial, Helvetica, sans-serif;
+}
+
 
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Noyh-SemiLight';
 }
