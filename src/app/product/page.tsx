@@ -42,34 +42,34 @@ export default function ProductPage() {
             src={Popular1} 
             alt="Black Opium Perfume" 
             fill
-            className="object-contain bg-[#fdf0e4]"
+            className="object-contain bg-[#fdf6e9]"
           />
         </div>
 
         {/* Product Details Card */}
-        <div className="bg-white rounded-t-[30px] px-5 pt-6 pb-20 -mt-5">
+        <div className="bg-white rounded-t-3xl px-5 pt-6 pb-20 -mt-10 relative z-10">
           {/* Discount Badge */}
-          <div className="flex justify-center -mt-8 mb-4 relative z-10">
-            <div className="bg-black text-white text-xs font-semibold px-5 py-2 rounded-full">
+          <div className="flex justify-center mb-4">
+            <div className="bg-black text-white text-sm font-semibold px-5 py-3 rounded-full">
               -20%
             </div>
           </div>
 
           {/* Product Specs */}
-          <div className="flex justify-between gap-2 mb-6 mt-4 mx-1">
-            <div className="bg-[#f8e8e8] rounded-[15px] px-3 py-3 text-center w-[22%]">
+          <div className="flex justify-between mb-6">
+            <div className="bg-[#f8e8e8] w-20 h-20 rounded-xl px-4 py-3 text-center">
               <p className="font-bold text-lg">150</p>
               <p className="text-xs text-gray-600">ml</p>
             </div>
-            <div className="bg-[#f8e8e8] rounded-[15px] px-3 py-3 text-center w-[22%]">
+            <div className="bg-[#f8e8e8] w-20 h-20 rounded-xl px-4 py-3 text-center">
               <p className="font-bold text-lg">100%</p>
               <p className="text-xs text-gray-600">pur</p>
             </div>
-            <div className="bg-[#f8e8e8] rounded-[15px] px-3 py-3 text-center w-[22%]">
+            <div className="bg-[#f8e8e8] w-20 h-20 rounded-xl px-4 py-3 text-center">
               <p className="font-bold text-lg">4.8</p>
               <p className="text-xs text-gray-600">note</p>
             </div>
-            <div className="bg-[#f8e8e8] rounded-[15px] px-3 py-3 text-center w-[22%]">
+            <div className="bg-[#f8e8e8] w-20 h-20 rounded-xl px-4 py-3 text-center">
               <p className="font-bold text-lg">CBC</p>
               <p className="text-xs text-gray-600">marque</p>
             </div>
@@ -89,28 +89,23 @@ export default function ProductPage() {
 
           {/* Quantity and Add to Cart */}
           <div className="flex justify-between items-center">
-            <div className="flex items-center border-2 border-gray-200 rounded-full">
+            <div className="flex items-center px-6 py-3 border-2 border-gray-200 rounded-full">
               <button 
-                className="px-4 py-2"
+                className="px-4"
                 onClick={decreaseQuantity}
               >
                 <FiMinus />
               </button>
               <span className="px-4">{quantity}</span>
               <button 
-                className="px-4 py-2"
+                className="px-4"
                 onClick={increaseQuantity}
               >
                 <FiPlus />
               </button>
             </div>
             <button className="bg-black text-white rounded-full px-6 py-3 flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" className="mr-2">
-                <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
-                  <path d="M3.977 9.84A2 2 0 0 1 5.971 8h12.058a2 2 0 0 1 1.994 1.84l.803 10A2 2 0 0 1 18.833 22H5.167a2 2 0 0 1-1.993-2.16z" />
-                  <path d="M16 11V6a4 4 0 0 0-4-4v0a4 4 0 0 0-4 4v5" />
-                </g>
-              </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><circle cx="9.549" cy="19.049" r="1.701"/><circle cx="16.96" cy="19.049" r="1.701"/><path d="m5.606 5.555l2.01 6.364c.309.978.463 1.467.76 1.829c.26.32.599.567.982.72c.435.173.947.173 1.973.173h3.855c1.026 0 1.538 0 1.972-.173c.384-.153.722-.4.983-.72c.296-.362.45-.851.76-1.829l.409-1.296l.24-.766l.331-1.05a2.5 2.5 0 0 0-2.384-3.252zm0 0l-.011-.037a7 7 0 0 0-.14-.42a2.92 2.92 0 0 0-2.512-1.84C2.84 3.25 2.727 3.25 2.5 3.25"/></g></svg>
               Ajouter au panier
             </button>
           </div>

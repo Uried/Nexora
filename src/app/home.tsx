@@ -1,13 +1,16 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Profile_pic from '../../src/assets/images/profile-pic.jpg';
 import Banner1 from '../../src/assets/images/banner1.png';
+import Banner2 from '../../src/assets/images/banner2.png';
 import Popular1 from '../../src/assets/images/popular1 (1).jpg';
 import Popular2 from '../../src/assets/images/popular1 (2).jpg';
 import Popular3 from '../../src/assets/images/popular1 (3).jpg';
 import Popular4 from '../../src/assets/images/popular1 (4).jpg';
+import Popular5 from '../../src/assets/images/popular1 (5).jpg';
+import Menbag from '../../src/assets/images/menbag.jpg';
 import Link from 'next/link';
 import { FiSearch, FiShoppingCart } from 'react-icons/fi';
 import { BsHeart, BsHeartFill } from 'react-icons/bs';
@@ -21,6 +24,47 @@ export default function HomePage() {
   // État pour gérer le nombre d'articles dans le panier
   const [cartItemCount, setCartItemCount] = useState<number>(3);
   const router = useRouter();
+
+  // États pour le carrousel de bannières
+  const [currentBanner, setCurrentBanner] = useState<number>(0);
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+  
+  // Données des bannières (texte et image)
+  const bannerData = [
+    {
+      title: "Votre style, votre beauté",
+      description: "Découvrez la meilleure collection. Trouvez votre parfum signature aujourd'hui.",
+      buttonText: "Commandez maintenant",
+      image: Banner1
+    },
+    {
+      title: "Sacs à tomber!",
+      description: "Craque pour nos nouveaux sacs trop stylés! Parfaits pour compléter ton look et faire tourner les têtes.",
+      buttonText: "Je veux voir ça!",
+      image: Banner2
+    }
+  ];
+  
+  // Effet pour changer de bannière toutes les 3 secondes avec effet de fondu
+  useEffect(() => {
+    const changeBanner = () => {
+      // Démarrer l'animation de fondu
+      setIsAnimating(true);
+      
+      // Attendre que l'animation de sortie soit terminée avant de changer la bannière
+      setTimeout(() => {
+        setCurrentBanner(prev => (prev + 1) % bannerData.length);
+        
+        // Attendre un court instant puis démarrer l'animation d'entrée
+        setTimeout(() => {
+          setIsAnimating(false);
+        }, 50);
+      }, 500);
+    };
+    
+    const interval = setInterval(changeBanner, 5000);
+    return () => clearInterval(interval);
+  }, [bannerData.length]);
 
   // Fonction pour gérer les likes des produits
   const toggleLike = (productName: string) => {
@@ -96,22 +140,31 @@ export default function HomePage() {
       </div>
 
 
-      {/* Featured Collection */}
-      <div className="bg-black text-white rounded-3xl p-3 mb-6">
+      {/* Featured Collection - Carousel */}
+      <div className="bg-black text-white rounded-3xl p-3 mb-6 overflow-hidden">
         <div className="flex justify-between items-center">
           <div className="w-2/3">
-            <h3 className="text-xl noyh-regular font-semibold mb-1">Votre style, votre beauté</h3>
-            <p className="text-gray-300 mb-4">Découvrez la meilleure collection. Trouvez votre parfum signature aujourd'hui.</p>
-            <button className="bg-white noyh-light text-black px-5 py-1.5 rounded-full text-sm font-semibold">
-              Commandez maintenant
-            </button>
+            <div className={`transition-opacity duration-500 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}>
+              <h3 className="text-xl noyh-regular font-semibold mb-1">{bannerData[currentBanner].title}</h3>
+              <p className="text-gray-300 mb-4">{bannerData[currentBanner].description}</p>
+              <button className="bg-white noyh-light text-black px-5 py-1.5 rounded-full text-sm font-semibold">
+                {bannerData[currentBanner].buttonText}
+              </button>
+            </div>
           </div>
           <div className="w-2/5">
             <div className="w-full aspect-square relative flex items-center justify-center overflow-visible">
-              <Image src={Banner1} alt="Banner" className="w-full h-auto scale-100" />
+              <div className={`transition-opacity duration-500 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}>
+                <Image 
+                  src={bannerData[currentBanner].image} 
+                  alt={`Banner ${currentBanner + 1}`} 
+                  className="w-full h-auto scale-100" 
+                />
+              </div>
             </div>
           </div>
         </div>
+
       </div>
 
       {/* Category Pills */}
@@ -199,7 +252,7 @@ export default function HomePage() {
           >
             <div className="relative w-full aspect-square mb-3 flex items-center justify-center overflow-hidden rounded-xl">
               <Image
-                src={Popular2}
+                src={Popular5}
                 alt="Black Opium"
                 className="object-cover w-full h-full"
                 width={150}
@@ -220,7 +273,7 @@ export default function HomePage() {
             </div>
             <div className="flex items-center justify-between">
               <div className='font-semibold'>
-                <h4 className="text-sm">Nabeez</h4>
+                <h4 className="text-sm">Loui Martin Arthur</h4>
                 <div className="flex items-baseline gap-3">
                   <p className="text-gray-500 text-xs mb-2">32 500 FCFA</p>
                 </div>
@@ -276,7 +329,7 @@ export default function HomePage() {
           >
             <div className="relative w-full aspect-square mb-3 flex items-center justify-center overflow-hidden rounded-xl">
               <Image
-                src={Popular4}
+                src={Menbag}
                 alt="J'adore"
                 className="object-cover w-full h-full"
                 width={150}
@@ -297,7 +350,7 @@ export default function HomePage() {
             </div>
             <div className="flex items-center justify-between">
               <div className='font-semibold '>
-                <h4 className="text-sm">LOUI MARTIN</h4>
+                <h4 className="text-sm capitalize">Louis Vuitton</h4>
                 <p className="text-gray-500 text-xs mb-2">36 000 FCFA</p>
               </div>
               <button 
