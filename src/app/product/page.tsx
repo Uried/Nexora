@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { FiMinus, FiPlus, FiArrowLeft, FiShoppingCart } from 'react-icons/fi';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Header from '../../components/Header';
 import { addToCart } from '../../lib/cart';
 
-export default function ProductPage() {
+function ProductContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
@@ -244,5 +244,19 @@ export default function ProductPage() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function ProductPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="pt-16 bg-[#fbf0ef] min-h-screen flex items-center justify-center text-gray-600">
+          Chargement...
+        </div>
+      }
+    >
+      <ProductContent />
+    </Suspense>
   );
 }
