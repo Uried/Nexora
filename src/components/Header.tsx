@@ -99,7 +99,7 @@ const Header: React.FC<HeaderProps> = ({ defaultLanguage = 'FR' }) => {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/compte" className="block py-2 text-lg" onClick={toggleMenu}>
+                  <Link href="/account" className="block py-2 text-lg" onClick={toggleMenu}>
                     Mon compte
                   </Link>
                 </li>

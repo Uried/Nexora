@@ -99,25 +99,28 @@ export default function HomePage() {
     <div className="container mx-auto px-4 py-6 bg-[#fbf0ef] min-h-screen">
       {/* Welcome section */}
       <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push('/account')}>
           <div className="w-12 h-12 rounded-full overflow-hidden bg-blue-200 flex items-center justify-center">
             {/* Placeholder pour l'avatar */}
-            <Image src={Profile_pic} alt="Profile" width={40} height={40} />
+            <Image src={Profile_pic} alt="Profile" width={40} height={40} onClick={() => router.push('/account')} />
           </div>
           <div>
             <h2 className="text-xl font-semibold">Salut, Mina!</h2>
             <p className="text-gray-500 text-base">Bon retour</p>
           </div>
         </div>
-        <div className="relative">
-          <button className="p-3 rounded-full bg-white shadow-sm">
-            <FiShoppingCart size={18} />
-          </button>
-          {cartItemCount > 0 && (
-            <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-              {cartItemCount}
-            </div>
-          )}
+        <div className="flex items-center space-x-3">
+          
+          <div className="relative" onClick={() => router.push('/cart')}>
+            <button className="p-3 rounded-full bg-white shadow-sm">
+              <FiShoppingCart size={18} />
+            </button>
+            {cartItemCount > 0 && (
+              <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {cartItemCount}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -132,7 +135,10 @@ export default function HomePage() {
             className="bg-transparent border-none outline-none flex-grow text-sm"
           />
         </div>
-        <button className="bg-black text-white rounded-full p-3">
+        <button 
+          className="bg-black text-white rounded-full p-3"
+          onClick={() => router.push('/liked')}
+        >
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#fff" fillRule="evenodd" d="M5.722 6.8c-.923 1.176-1.256 2.281-1.22 3.31c.038 1.045.458 2.068 1.136 3.06c1.367 1.996 3.694 3.737 5.609 5.09c.452.32 1.05.32 1.502 0c1.93-1.36 4.256-3.1 5.62-5.095c.676-.99 1.093-2.012 1.129-3.055c.034-1.029-.3-2.134-1.225-3.31c-1.62-1.711-3.953-1.66-5.541-.278a1.125 1.125 0 0 1-1.468 0c-1.589-1.381-3.92-1.433-5.542.279m-.743-.669c2.016-2.145 4.97-2.077 6.941-.363a.12.12 0 0 0 .078.027q.05-.002.077-.027c1.97-1.714 4.928-1.783 6.942.364l.015.015l.013.017c1.059 1.34 1.496 2.677 1.452 3.98c-.043 1.292-.558 2.495-1.303 3.585c-1.48 2.164-3.953 3.998-5.868 5.349a2.3 2.3 0 0 1-2.657-.001c-1.9-1.344-4.374-3.178-5.856-5.343c-.746-1.09-1.264-2.295-1.31-3.588c-.046-1.304.389-2.641 1.448-3.982l.013-.017z" clipRule="evenodd" /></svg>
         </button>
       </div>
@@ -166,6 +172,12 @@ export default function HomePage() {
       </div>
 
       {/* Category Pills */}
+      <div className="flex justify-between items-center mb-3">
+        <h3 className="text-lg font-semibold">Catégories</h3>
+        <Link href="/categories" className="text-gray-500 text-sm">
+          Voir tout
+        </Link>
+      </div>
       <div className="flex space-x-3 mb-6 overflow-x-auto pb-2">
         {[
           'Toutes les collections',
@@ -188,14 +200,13 @@ export default function HomePage() {
             {category}
           </button>
         ))}
-
       </div>
 
       {/* Popular Perfumes */}
       <div className="mb-6">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold">Articles populaires</h3>
-          <Link href="/" className="text-gray-500 text-sm">
+          <Link href="/products" className="text-gray-500 text-sm">
             Voir tout
           </Link>
         </div>
