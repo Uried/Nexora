@@ -100,7 +100,7 @@ const Header: React.FC<HeaderProps> = ({ cartItemCount = 0, defaultLanguage = 'F
                   </Link>
                 </li>
                 <li>
-                  <Link href="/compte" className="block py-2 text-lg" onClick={toggleMenu}>
+                  <Link href="/account" className="block py-2 text-lg" onClick={toggleMenu}>
                     Mon compte
                   </Link>
                 </li>

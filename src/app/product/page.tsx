@@ -3,12 +3,13 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FiMinus, FiPlus, FiArrowLeft } from 'react-icons/fi';
-import { BsHeart, BsHeartFill } from 'react-icons/bs';
+import { FiMinus, FiPlus, FiArrowLeft, FiShoppingCart } from 'react-icons/fi';
+import { useRouter } from 'next/navigation';
 import Header from '../../components/Header';
 import Popular1 from '../../assets/images/popular1 (1).jpg';
 
 export default function ProductPage() {
+  const router = useRouter();
   const [quantity, setQuantity] = useState(1);
   const [isLiked, setIsLiked] = useState(false);
 
@@ -32,12 +33,20 @@ export default function ProductPage() {
       <div className="pt-16 bg-[#fbf0ef] min-h-screen">
         {/* Product Image */}
         <div className="relative w-full aspect-square mb-0">
-          <Link 
-            href="/" 
-            className="absolute top-4 left-4 z-10 flex items-center bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full text-sm font-medium shadow-sm"
-          >
-            <FiArrowLeft className="mr-2" /> Retour
-          </Link>
+          <div className="absolute top-4 left-4 right-4 z-10 flex justify-between">
+            <Link 
+              href="/" 
+              className="flex items-center bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full text-sm font-medium shadow-sm"
+            >
+              <FiArrowLeft className="mr-2" /> Retour
+            </Link>
+            <button 
+              onClick={() => router.push('/cart')} 
+              className="flex items-center bg-black text-white px-3 py-1.5 rounded-full text-sm font-medium shadow-sm"
+            >
+              <FiShoppingCart className="mr-2" /> Panier
+            </button>
+          </div>
           <Image 
             src={Popular1} 
             alt="Black Opium Perfume" 
