@@ -17,7 +17,7 @@ export function getKasiUserId(): string | null {
 export async function clearCart(): Promise<{ ok: boolean; message?: string }>{
   const cartId = getKasiUserId();
   if (!cartId) return { ok: false, message: 'Identifiant client introuvable' };
-  const base = (process.env.NEXT_PUBLIC_API_BASE_URL || 'http://142.93.55.156:8000').replace(/\/$/, '');
+  const base = (process.env.NEXT_PUBLIC_API_BASE_URL || 'http://146.59.155.128:8000').replace(/\/$/, '');
   try {
     const res = await fetch(`${base}/api/cart?cartId=${encodeURIComponent(cartId)}`, { method: 'DELETE' });
     if (!res.ok) return { ok: false, message: `HTTP ${res.status}` };
@@ -34,7 +34,7 @@ export async function clearCart(): Promise<{ ok: boolean; message?: string }>{
 export async function removeCartItem(itemId: string): Promise<{ ok: boolean; message?: string }>{
   const cartId = getKasiUserId();
   if (!cartId) return { ok: false, message: 'Identifiant client introuvable' };
-  const base = (process.env.NEXT_PUBLIC_API_BASE_URL || 'http://142.93.55.156:8000').replace(/\/$/, '');
+  const base = (process.env.NEXT_PUBLIC_API_BASE_URL || 'http://146.59.155.128:8000').replace(/\/$/, '');
   try {
     const res = await fetch(`${base}/api/cart/items/${encodeURIComponent(itemId)}?cartId=${encodeURIComponent(cartId)}`, { method: 'DELETE' });
     if (!res.ok) return { ok: false, message: `HTTP ${res.status}` };
@@ -51,7 +51,7 @@ export async function removeCartItem(itemId: string): Promise<{ ok: boolean; mes
 export async function updateCartItemQuantity(itemId: string, quantity: number): Promise<{ ok: boolean; message?: string }>{
   const cartId = getKasiUserId();
   if (!cartId) return { ok: false, message: 'Identifiant client introuvable' };
-  const base = (process.env.NEXT_PUBLIC_API_BASE_URL || 'http://142.93.55.156:8000').replace(/\/$/, '');
+  const base = (process.env.NEXT_PUBLIC_API_BASE_URL || 'http://146.59.155.128:8000').replace(/\/$/, '');
   try {
     const res = await fetch(`${base}/api/cart/items/${encodeURIComponent(itemId)}`, {
       method: 'PATCH',
@@ -100,7 +100,7 @@ export type ServerCartResponse = {
 export async function getCartFull(): Promise<ServerCartResponse | null> {
   const cartId = getKasiUserId();
   if (!cartId) return null;
-  const base = (process.env.NEXT_PUBLIC_API_BASE_URL || 'http://142.93.55.156:8000').replace(/\/$/, '');
+  const base = (process.env.NEXT_PUBLIC_API_BASE_URL || 'http://146.59.155.128:8000').replace(/\/$/, '');
   const url = `${base}/api/cart/full/${encodeURIComponent(cartId)}?populate=true`;
   const res = await fetch(url, { cache: 'no-store' });
   if (!res.ok) return null;
@@ -111,7 +111,7 @@ export async function addToCart(productId: string, quantity: number = 1, priceAt
   const cartId = getKasiUserId();
   if (!cartId) return { ok: false, message: 'Identifiant client introuvable' };
 
-  const base = (process.env.NEXT_PUBLIC_API_BASE_URL || 'http://142.93.55.156:8000').replace(/\/$/, '');
+  const base = (process.env.NEXT_PUBLIC_API_BASE_URL || 'http://146.59.155.128:8000').replace(/\/$/, '');
   try {
     const res = await fetch(`${base}/api/cart/items`, {
       method: 'POST',
