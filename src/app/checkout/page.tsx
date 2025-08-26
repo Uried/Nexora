@@ -1,24 +1,42 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FiArrowLeft, FiAlertTriangle } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import Header from '../../components/Header';
-
-// Import des images
-import Popular1 from '../../assets/images/popular1 (1).jpg';
-import Popular2 from '../../assets/images/popular1 (2).jpg';
-import Popular3 from '../../assets/images/popular1 (3).jpg';
+import { getCartFull, type ServerCartItem, type ServerCartResponse } from '../../lib/cart';
 
 export default function CheckoutPage() {
     const router = useRouter();
     
-    // Simuler les articles du panier (dans une application réelle, cela viendrait d'un état global ou d'une API)
-    const cartItems = [
-        { id: 1, name: 'Black Opium', brand: 'Yves Saint Laurent', price: 65000, quantity: 1, image: Popular1 },
-        { id: 2, name: 'Coco Mademoiselle', brand: 'Chanel', price: 72000, quantity: 2, image: Popular2 },
-        { id: 3, name: 'Loui Martin', brand: 'Louis Vuitton', price: 39000, quantity: 1, image: Popular3 },
-    ];
+    // États pour le panier
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [serverCart, setServerCart] = useState<ServerCartResponse | null>(null);
+    
+    // Charger le panier depuis l'API
+    useEffect(() => {
+        let mounted = true;
+        (async () => {
+            try {
+                setLoading(true);
+                const data = await getCartFull();
+                if (!mounted) return;
+                setServerCart(data);
+                setError(null);
+            } catch (e: unknown) {
+                if (!mounted) return;
+                const message = e instanceof Error ? e.message : 'Erreur de chargement du panier';
+                setError(message);
+            } finally {
+                if (mounted) setLoading(false);
+            }
+        })();
+        return () => { mounted = false; };
+    }, []);
+    
+    // Dérivations utiles
+    const cartItems: ServerCartItem[] = serverCart?.cart?.items || [];
 
     // États pour le formulaire de commande
     const [formData, setFormData] = useState({
@@ -33,8 +51,11 @@ export default function CheckoutPage() {
         address: ''
     });
 
-    // Calculer le sous-total
-    const subtotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+    // Calculer le sous-total (même logique que dans cart.tsx)
+    const subtotal = cartItems.reduce((acc, item) => {
+        const itemPrice = item.priceAtAdd ?? item.productId.discountPrice ?? item.productId.price;
+        return acc + (itemPrice * item.quantity);
+    }, 0);
     
     // Frais de livraison
     const shippingFee = 5000;
@@ -72,9 +93,13 @@ export default function CheckoutPage() {
         if (!formData.phone.trim()) {
             newErrors.phone = 'Le numéro de téléphone est requis';
             isValid = false;
-        } else if (!/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im.test(formData.phone.trim())) {
-            newErrors.phone = 'Numéro de téléphone invalide';
-            isValid = false;
+        } else {
+            // Extraire seulement les chiffres du numéro de téléphone
+            const phoneDigits = formData.phone.replace(/\D/g, '');
+            if (phoneDigits.length < 9) {
+                newErrors.phone = 'Le numéro de téléphone doit contenir au moins 9 chiffres';
+                isValid = false;
+            }
         }
         
         if (!formData.address.trim()) {
@@ -89,17 +114,19 @@ export default function CheckoutPage() {
     // Préparer le message WhatsApp
     const prepareWhatsAppMessage = () => {
         // Numéro WhatsApp de l'entreprise (à remplacer par le vrai numéro)
-        const whatsappNumber = "237676663623"; // Format: code pays + numéro sans +
+        const whatsappNumber = "237694946982"; // Format: code pays + numéro sans +
         
         // Construire le message
-        let message = `*NOUVELLE COMMANDE NEXORA*\n\n`;
+        let message = `*NOUVELLE COMMANDE KASI*\n\n`;
         message += `*Informations client:*\n`;
         message += `Téléphone: ${formData.phone}\n`;
         message += `Adresse de livraison: ${formData.address}\n\n`;
         
         message += `*Articles commandés:*\n`;
         cartItems.forEach(item => {
-            message += `- ${item.quantity}x ${item.name} (${item.brand}): ${formatPrice(item.price * item.quantity)}\n`;
+            const itemPrice = item.priceAtAdd ?? item.productId.discountPrice ?? item.productId.price;
+            const brand = item.productId.details?.brand || '';
+            message += `- ${item.quantity}x ${item.productId.name}${brand ? ` (${brand})` : ''}: ${formatPrice(itemPrice * item.quantity)}\n`;
         });
         
         message += `\n*Sous-total:* ${formatPrice(subtotal)}\n`;
@@ -110,7 +137,7 @@ export default function CheckoutPage() {
             message += `*Notes:* ${formData.notes}\n\n`;
         }
         
-        message += `Merci pour votre commande!`;
+        message += `Merci!`;
         
         // Encoder le message pour l'URL
         const encodedMessage = encodeURIComponent(message);
@@ -150,6 +177,31 @@ export default function CheckoutPage() {
                     </button>
                     <h1 className="text-2xl font-bold">Finaliser la commande</h1>
                 </div>
+
+                {loading ? (
+                    <div className="flex items-center justify-center py-16">
+                        <div className="bg-white px-6 py-4 rounded-xl shadow-sm">Chargement du panier...</div>
+                    </div>
+                ) : error ? (
+                    <div className="flex items-center justify-center py-16">
+                        <div className="bg-white px-6 py-4 rounded-xl shadow-sm text-red-600">{error}</div>
+                    </div>
+                ) : cartItems.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-16">
+                        <div className="bg-white p-8 rounded-2xl shadow-sm text-center max-w-md mx-auto">
+                            <div className="text-5xl mb-4">🛒</div>
+                            <h2 className="text-xl font-semibold mb-2">Votre panier est vide</h2>
+                            <p className="text-gray-500 mb-6">Vous devez ajouter des articles à votre panier avant de passer commande.</p>
+                            <button 
+                                onClick={() => router.push('/products')}
+                                className="bg-black text-white py-3 px-6 rounded-full font-medium"
+                            >
+                                Découvrir nos produits
+                            </button>
+                        </div>
+                    </div>
+                ) : (
+                    <>
                 
                 {/* Note sur le paiement - Placée en haut de la page */}
                 <div className="bg-yellow-50 border border-yellow-100 rounded-2xl p-4 flex items-start mb-6">
@@ -240,6 +292,8 @@ export default function CheckoutPage() {
                         </form>
                     </div>
                 </div>
+                </>
+                )}
             </div>
         </>
     );

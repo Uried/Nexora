@@ -26,14 +26,14 @@ export default function OrderConfirmationPage() {
                     <div className="bg-yellow-50 border border-yellow-100 rounded-xl p-4 mb-6 text-left">
                         <p className="text-sm text-gray-700">
                             <strong>Note:</strong> Si vous n&#39;avez pas été redirigé vers WhatsApp, veuillez nous contacter directement au 
-                            <a href="tel:+237695782165" className="text-black font-medium"> +237 695 782 165</a> pour finaliser votre commande.
+                            <a href="tel:+237694946982" className="text-black font-medium"> +237 6 94 94 69 82</a> pour finaliser votre commande.
                         </p>
                     </div>
                     
                     <div className="space-y-3">
                         <button 
                             onClick={() => router.push('/orders')}
-                            className="w-full bg-black text-white py-3 rounded-full font-medium flex items-center justify-center"
+                            className="w-full hidden bg-black text-white py-3 rounded-full font-medium flex items-center justify-center"
                         >
                             <FiShoppingBag className="mr-2" /> Voir mes commandes
                         </button>
