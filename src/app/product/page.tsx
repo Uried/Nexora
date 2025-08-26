@@ -42,7 +42,7 @@ function ProductContent() {
       setLoading(false);
       return;
     }
-    const rawBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+    const rawBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://142.93.55.156:8000';
     const baseUrl = rawBase.replace(/\/$/, '');
 
     const fetchById = async () => {
