@@ -82,7 +82,7 @@ export default function HomePage() {
 
   // Charger les catégories depuis l'API
   useEffect(() => {
-    const rawBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://146.59.155.128:8000';
+    const rawBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.kasi.market:8000';
     const baseUrl = rawBase.replace(/\/$/, '');
     const url = `${baseUrl}/api/categories`;
     const load = async () => {
@@ -100,7 +100,7 @@ export default function HomePage() {
 
   // Charger les produits depuis l'API (tous ou par catégorie)
   useEffect(() => {
-    const rawBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://146.59.155.128:8000';
+    const rawBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.kasi.market:8000';
     const baseUrl = rawBase.replace(/\/$/, '');
     const url = currentCategoryId
       ? `${baseUrl}/api/products/category/${currentCategoryId}`
