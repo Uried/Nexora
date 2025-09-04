@@ -104,7 +104,7 @@ function ProductContent() {
   return (
     <>
       <Header defaultLanguage="FR" />
-      <div className="pt-16 bg-[#beb7a4]/40  min-h-screen">
+      <div className="pt-16 bg-[#beb7a4]/5  min-h-screen">
         {/* Product Image / Slider */}
         <div className="relative w-full aspect-square mb-0" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
           <div className="absolute top-4 left-4 right-4 z-10 flex justify-between">
@@ -251,7 +251,7 @@ export default function ProductPage() {
   return (
     <Suspense
       fallback={
-        <div className="pt-16 bg-[#beb7a4]/40 min-h-screen flex items-center justify-center text-gray-600">
+        <div className="pt-16 bg-[#beb7a4]/5 min-h-screen flex items-center justify-center text-gray-600">
           Chargement...
         </div>
       }
