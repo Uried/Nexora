@@ -167,7 +167,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-6 bg-[#beb7a4]/5 min-h-screen">
+    <div className="container mx-auto px-4 py-6 bg-[#fbf0ef] min-h-screen">
       {/* Welcome section */}
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push('/account')}>

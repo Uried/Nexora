@@ -113,7 +113,7 @@ export default function CartPage() {
     return (
         <>
             <Header defaultLanguage="FR" />
-            <div className="pt-16 bg-[#beb7a4]/5 min-h-screen px-4 pb-20">
+            <div className="pt-16 bg-[#fbf0ef] min-h-screen px-4 pb-20">
                 {/* En-tête de la page */}
                 <div className="py-6 flex items-center justify-between">
                     <div className="flex items-center">

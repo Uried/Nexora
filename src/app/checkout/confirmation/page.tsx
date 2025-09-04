@@ -11,7 +11,7 @@ export default function OrderConfirmationPage() {
     return (
         <>
             <Header defaultLanguage="FR" />
-            <div className="pt-16 bg-[#beb7a4]/5 min-h-screen px-4 pb-20 flex items-center justify-center">
+            <div className="pt-16 bg-[#fbf0ef] min-h-screen px-4 pb-20 flex items-center justify-center">
                 <div className="bg-white rounded-2xl p-6 shadow-sm max-w-md w-full text-center">
                     <div className="bg-green-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
                         <FiCheck size={40} className="text-green-600" />
