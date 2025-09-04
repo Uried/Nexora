@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../styles/globals.css";
 import ClientInit from "../components/ClientInit";
-import SplashWrapper from "../components/SplashWrapper";
+import SplashWrapper from "@/components/SplashWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Nexora - Premium Perfumes",
-  description: "Discover premium perfumes and fragrances at Nexora",
+  title: "KāSi",
+  description: "Discover the best products at KāSi",
 };
 
 export default function RootLayout({
