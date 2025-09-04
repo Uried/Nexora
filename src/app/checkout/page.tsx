@@ -58,7 +58,7 @@ export default function CheckoutPage() {
     }, 0);
     
     // Frais de livraison
-    const shippingFee = 5000;
+    const shippingFee = 1000;
     
     // Total
     const total = subtotal + shippingFee;
