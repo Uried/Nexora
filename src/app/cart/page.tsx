@@ -55,7 +55,7 @@ export default function CartPage() {
             return acc + (typeof it.lineTotal === 'number' ? it.lineTotal! : (it.priceAtAdd ?? it.productId.discountPrice ?? it.productId.price) * it.quantity);
         }, 0);
     }, [items]);
-    const shippingFee = 5000;
+    const shippingFee = 1000;
     const total = subtotal + (items.length ? shippingFee : 0);
 
     // Fonction pour demander confirmation avant de supprimer un article
