@@ -11,7 +11,7 @@ export default function OrderConfirmationPage() {
     return (
         <>
             <Header defaultLanguage="FR" />
-            <div className="pt-16 bg-[#fbf0ef] min-h-screen px-4 pb-20 flex items-center justify-center">
+            <div className="pt-16 bg-[#beb7a4]/40 min-h-screen px-4 pb-20 flex items-center justify-center">
                 <div className="bg-white rounded-2xl p-6 shadow-sm max-w-md w-full text-center">
                     <div className="bg-green-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
                         <FiCheck size={40} className="text-green-600" />
@@ -26,7 +26,7 @@ export default function OrderConfirmationPage() {
                     <div className="bg-yellow-50 border border-yellow-100 rounded-xl p-4 mb-6 text-left">
                         <p className="text-sm text-gray-700">
                             <strong>Note:</strong> Si vous n&#39;avez pas été redirigé vers WhatsApp, veuillez nous contacter directement au 
-                            <a href="tel:+237694946982" className="text-black font-medium"> +237 6 94 94 69 82</a> pour finaliser votre commande.
+                            <a href="tel:+237651418376" className="text-black font-medium"> +237 6 51 41 83 76</a> pour finaliser votre commande.
                         </p>
                     </div>
                     

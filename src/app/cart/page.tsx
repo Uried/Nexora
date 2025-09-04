@@ -50,7 +50,10 @@ export default function CartPage() {
     const items: ServerCartItem[] = useMemo(() => serverCart?.cart?.items || [], [serverCart]);
     const subtotal: number = useMemo(() => {
         if (!items.length) return 0;
-        return items.reduce((acc, it) => acc + (typeof it.lineTotal === 'number' ? it.lineTotal! : (it.priceAtAdd ?? it.productId.discountPrice ?? it.productId.price) * it.quantity), 0);
+        return items.reduce((acc, it) => {
+            if (!it.productId) return acc;
+            return acc + (typeof it.lineTotal === 'number' ? it.lineTotal! : (it.priceAtAdd ?? it.productId.discountPrice ?? it.productId.price) * it.quantity);
+        }, 0);
     }, [items]);
     const shippingFee = 5000;
     const total = subtotal + (items.length ? shippingFee : 0);
@@ -110,7 +113,7 @@ export default function CartPage() {
     return (
         <>
             <Header defaultLanguage="FR" />
-            <div className="pt-16 bg-[#fbf0ef] min-h-screen px-4 pb-20">
+            <div className="pt-16 bg-[#beb7a4]/40 min-h-screen px-4 pb-20">
                 {/* En-tête de la page */}
                 <div className="py-6 flex items-center justify-between">
                     <div className="flex items-center">
@@ -152,7 +155,7 @@ export default function CartPage() {
                                             {item.productId?.images?.[0] ? (
                                                 <Image
                                                     src={item.productId.images[0]}
-                                                    alt={item.productId.name}
+                                                    alt={item.productId?.name || 'Produit'}
                                                     fill
                                                     className="object-cover"
                                                 />
@@ -161,9 +164,9 @@ export default function CartPage() {
                                             )}
                                         </div>
                                         <div className="flex-1">
-                                            <h3 className="font-semibold">{item.productId.name}</h3>
-                                            <p className="text-gray-500 text-sm">{item.productId.details?.brand || ''}</p>
-                                            <p className="font-semibold mt-1">{formatPrice(item.priceAtAdd ?? item.productId.discountPrice ?? item.productId.price)}</p>
+                                            <h3 className="font-semibold">{item.productId?.name || 'Produit indisponible'}</h3>
+                                            <p className="text-gray-500 text-sm bg-white px-2 py-1 rounded-full">{item.productId?.details?.brand || ''}</p>
+                                            <p className="font-semibold mt-1">{formatPrice(item.priceAtAdd ?? item.productId?.discountPrice ?? item.productId?.price ?? 0)}</p>
                                         </div>
                                         <div className="flex flex-col space-y-4 items-end">
                                             <div className="flex items-center border border-gray-200 rounded-full">

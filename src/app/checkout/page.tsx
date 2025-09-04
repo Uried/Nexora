@@ -114,7 +114,7 @@ export default function CheckoutPage() {
     // Préparer le message WhatsApp
     const prepareWhatsAppMessage = () => {
         // Numéro WhatsApp de l'entreprise (à remplacer par le vrai numéro)
-        const whatsappNumber = "237694946982"; // Format: code pays + numéro sans +
+        const whatsappNumber = "237651418376"; // Format: code pays + numéro sans +
         
         // Construire le message
         let message = `*NOUVELLE COMMANDE KASI*\n\n`;
@@ -166,7 +166,7 @@ export default function CheckoutPage() {
     return (
         <>
             <Header defaultLanguage="FR" />
-            <div className="pt-16 bg-[#fbf0ef] min-h-screen px-4 pb-20">
+            <div className="pt-16 bg-[#beb7a4]/40 min-h-screen px-4 pb-20">
                 {/* En-tête de la page */}
                 <div className="py-6 flex items-center">
                     <button
