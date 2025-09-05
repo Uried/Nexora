@@ -58,7 +58,7 @@ export default function CategoriesPage() {
           <div className="flex items-center">
             <Link 
               href="/" 
-              className="flex items-center bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full text-sm font-medium shadow-sm mr-4"
+              className="flex items-center bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full text-sm font-medium shadow-sm text-black mr-4"
             >
               <FiArrowLeft className="mr-2" /> Retour
             </Link>

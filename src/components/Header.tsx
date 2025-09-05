@@ -23,7 +23,7 @@ const Header: React.FC<HeaderProps> = ({ defaultLanguage = 'FR' }) => {
   };
 
   return (
-    <header className="bg-white shadow-sm fixed top-0 left-0 right-0 z-40">
+    <header className="bg-white text-black shadow-sm fixed top-0 left-0 right-0 z-40">
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Menu hamburger */}

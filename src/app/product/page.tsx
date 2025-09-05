@@ -110,7 +110,7 @@ function ProductContent() {
           <div className="absolute top-4 left-4 right-4 z-10 flex justify-between">
             <button
               onClick={() => router.back()}
-              className="flex items-center bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full text-sm font-medium shadow-sm"
+              className="flex items-center bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full text-sm font-medium shadow-sm text-black"
             >
               <FiArrowLeft className="mr-2" /> Retour
             </button>
@@ -209,12 +209,12 @@ function ProductContent() {
 
           {/* Quantity and Add to Cart */}
           <div className="flex justify-between items-center">
-            <div className="flex items-center px-6 py-3 border-2 border-gray-200 rounded-full">
-              <button className="px-4" onClick={decreaseQuantity}>
+            <div className="flex items-center px-6 py-3 border-2 border-black text-black rounded-full">
+              <button className="px-4 text-black" onClick={decreaseQuantity}>
                 <FiMinus />
               </button>
-              <span className="px-4">{quantity}</span>
-              <button className="px-4" onClick={increaseQuantity}>
+              <span className="px-4 text-black">{quantity}</span>
+              <button className="px-4 text-black" onClick={increaseQuantity}>
                 <FiPlus />
               </button>
             </div>

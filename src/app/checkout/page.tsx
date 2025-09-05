@@ -171,7 +171,7 @@ export default function CheckoutPage() {
                 <div className="py-6 flex items-center">
                     <button
                         onClick={() => router.back()}
-                        className="mr-3 bg-white p-2 rounded-full shadow-sm"
+                        className="mr-3 bg-white p-2 rounded-full shadow-sm text-black"
                     >
                         <FiArrowLeft size={20} />
                     </button>
@@ -233,8 +233,8 @@ export default function CheckoutPage() {
                                             name="phone"
                                             value={formData.phone}
                                             onChange={handleChange}
-                                            className={`w-full px-4 py-3 rounded-xl border ${errors.phone ? 'border-red-500' : 'border-gray-200'} focus:outline-none focus:ring-2 focus:ring-black/20`}
-                                            placeholder="Ex: +237 676 663 623"
+                                            className={`w-full px-4 py-3 text-black rounded-xl border ${errors.phone ? 'border-red-500' : 'border-gray-200'} focus:outline-none focus:ring-2 focus:ring-black/20`}
+                                            placeholder="Ex: 676 663 623"
                                         />
                                         {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
                                     </div>
@@ -256,7 +256,7 @@ export default function CheckoutPage() {
                                             value={formData.address}
                                             onChange={handleChange}
                                             rows={3}
-                                            className={`w-full px-4 py-3 rounded-xl border ${errors.address ? 'border-red-500' : 'border-gray-200'} focus:outline-none focus:ring-2 focus:ring-black/20`}
+                                            className={`w-full px-4 py-3 text-black rounded-xl border ${errors.address ? 'border-red-500' : 'border-gray-200'} focus:outline-none focus:ring-2 focus:ring-black/20`}
                                             placeholder="Quartier, rue, point de repère, etc."
                                         />
                                         {errors.address && <p className="text-red-500 text-xs mt-1">{errors.address}</p>}
@@ -272,7 +272,7 @@ export default function CheckoutPage() {
                                             value={formData.notes}
                                             onChange={handleChange}
                                             rows={2}
-                                            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-black/20"
+                                            className="w-full px-4 py-3 rounded-xl border border-black text-black focus:outline-none focus:ring-2 focus:ring-black/20"
                                             placeholder="Instructions spéciales pour la livraison"
                                         />
                                     </div>

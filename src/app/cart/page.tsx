@@ -119,7 +119,7 @@ export default function CartPage() {
                     <div className="flex items-center">
                         <button
                             onClick={() => router.back()}
-                            className="mr-3 bg-white p-2 rounded-full shadow-sm"
+                            className="mr-3 bg-white p-2 rounded-full shadow-sm text-black"
                         >
                             <FiArrowLeft size={20} />
                         </button>
@@ -151,7 +151,7 @@ export default function CartPage() {
                             {items.map(item => (
                                 <div key={item._id} className="bg-white rounded-2xl px-2 py-2 space-y-2 shadow-sm">
                                     <div className="flex items-center">
-                                        <div className="relative w-20 h-20 rounded-xl overflow-hidden mr-3">
+                                        <div className="relative w-20 h-20 rounded-xl overflow-hidden mr-3 text-black">
                                             {item.productId?.images?.[0] ? (
                                                 <Image
                                                     src={item.productId.images[0]}
@@ -164,17 +164,17 @@ export default function CartPage() {
                                             )}
                                         </div>
                                         <div className="flex-1">
-                                            <h3 className="font-semibold">{item.productId?.name || 'Produit indisponible'}</h3>
+                                            <h3 className="font-semibold text-black">{item.productId?.name || 'Produit indisponible'}</h3>
                                             <p className="text-gray-500 text-sm bg-white px-2 py-1 rounded-full">{item.productId?.details?.brand || ''}</p>
-                                            <p className="font-semibold mt-1">{formatPrice(item.priceAtAdd ?? item.productId?.discountPrice ?? item.productId?.price ?? 0)}</p>
+                                            <p className="font-semibold mt-1 text-black">{formatPrice(item.priceAtAdd ?? item.productId?.discountPrice ?? item.productId?.price ?? 0)}</p>
                                         </div>
                                         <div className="flex flex-col space-y-4 items-end">
-                                            <div className="flex items-center border border-gray-200 rounded-full">
-                                                <button className="px-2" onClick={() => decreaseQty(item)} disabled={item.quantity <= 1 || actioningItemId === item._id}>
+                                            <div className="flex items-center border border-gray-200 rounded-full text-black">
+                                                <button className="px-2 text-black" onClick={() => decreaseQty(item)} disabled={item.quantity <= 1 || actioningItemId === item._id}>
                                                     <FiMinus size={14} />
                                                 </button>
-                                                <span className="px-3 text-sm">{actioningItemId === item._id ? '...' : item.quantity}</span>
-                                                <button className="px-2 py-1" onClick={() => increaseQty(item)} disabled={actioningItemId === item._id}>
+                                                <span className="px-3 text-sm text-black">{actioningItemId === item._id ? '...' : item.quantity}</span>
+                                                <button className="px-2 py-1 text-black" onClick={() => increaseQty(item)} disabled={actioningItemId === item._id}>
                                                     <FiPlus size={14} />
                                                 </button>
                                             </div>
