@@ -175,7 +175,7 @@ export default function CheckoutPage() {
                     >
                         <FiArrowLeft size={20} />
                     </button>
-                    <h1 className="text-2xl font-bold">Finaliser la commande</h1>
+                    <h1 className="text-2xl font-bold text-black">Finaliser la commande</h1>
                 </div>
 
                 {loading ? (
@@ -190,7 +190,7 @@ export default function CheckoutPage() {
                     <div className="flex flex-col items-center justify-center py-16">
                         <div className="bg-white p-8 rounded-2xl shadow-sm text-center max-w-md mx-auto">
                             <div className="text-5xl mb-4">🛒</div>
-                            <h2 className="text-xl font-semibold mb-2">Votre panier est vide</h2>
+                            <h2 className="text-xl font-semibold text-black mb-2">Votre panier est vide</h2>
                             <p className="text-gray-500 mb-6">Vous devez ajouter des articles à votre panier avant de passer commande.</p>
                             <button 
                                 onClick={() => router.push('/products')}
@@ -220,7 +220,7 @@ export default function CheckoutPage() {
                         <form onSubmit={handleSubmit} className="space-y-6">
                             {/* Informations de contact */}
                             <div className="bg-white rounded-2xl p-5 shadow-sm">
-                                <h2 className="text-lg font-semibold mb-4">Informations de contact</h2>
+                                <h2 className="text-lg font-semibold text-black mb-4">Informations de contact</h2>
                                 
                                 <div className="space-y-4">
                                     <div>
@@ -243,7 +243,7 @@ export default function CheckoutPage() {
                             
                             {/* Adresse de livraison */}
                             <div className="bg-white rounded-2xl p-5 shadow-sm">
-                                <h2 className="text-lg font-semibold mb-4">Adresse de livraison</h2>
+                                <h2 className="text-lg font-semibold text-black mb-4">Adresse de livraison</h2>
                                 
                                 <div className="space-y-4">
                                     <div>

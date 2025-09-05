@@ -97,7 +97,7 @@ export default function AccountPage() {
             >
               <FiArrowLeft className="mr-2" /> Retour
             </Link>
-            <h1 className="text-2xl font-bold">Mon compte</h1>
+            <h1 className="text-2xl font-bold text-black">Mon compte</h1>
           </div>
           <button 
             onClick={() => router.push('/cart')} 

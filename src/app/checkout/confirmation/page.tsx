@@ -17,7 +17,7 @@ export default function OrderConfirmationPage() {
                         <FiCheck size={40} className="text-green-600" />
                     </div>
                     
-                    <h1 className="text-2xl font-bold mb-2">Commande envoyée avec succès!</h1>
+                    <h1 className="text-2xl font-bold text-black mb-2">Commande envoyée avec succès!</h1>
                     
                     <p className="text-gray-600 mb-6">
                         Votre commande a été transmise via WhatsApp. Notre équipe va traiter votre demande dans les plus brefs délais.

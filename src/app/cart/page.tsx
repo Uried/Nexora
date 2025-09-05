@@ -123,7 +123,7 @@ export default function CartPage() {
                         >
                             <FiArrowLeft size={20} />
                         </button>
-                        <h1 className="text-2xl font-bold">Mon Panier</h1>
+                        <h1 className="text-2xl font-bold text-black">Mon Panier</h1>
                     </div>
                     {items.length > 0 && (
                         <button
@@ -192,20 +192,20 @@ export default function CartPage() {
 
                         {/* Résumé de la commande */}
                         <div className="bg-white rounded-2xl p-5 shadow-sm mb-6">
-                            <h2 className="text-lg font-semibold mb-4">Résumé de la commande</h2>
+                            <h2 className="text-lg font-semibold text-black mb-4">Résumé de la commande</h2>
                             <div className="space-y-3">
                                 <div className="flex justify-between">
                                     <span className="text-gray-500">Sous-total</span>
-                                    <span>{formatPrice(subtotal)}</span>
+                                    <span className="text-black">{formatPrice(subtotal)}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="text-gray-500">Frais de livraison</span>
-                                    <span>{formatPrice(items.length ? shippingFee : 0)}</span>
+                                    <span className="text-black">{formatPrice(items.length ? shippingFee : 0)}</span>
                                 </div>
                                 <div className="border-t border-gray-100 pt-3 mt-3">
-                                    <div className="flex justify-between font-semibold">
+                                    <div className="flex text-black justify-between font-semibold">
                                         <span>Total</span>
-                                        <span>{formatPrice(total)}</span>
+                                        <span className="text-black">{formatPrice(total)}</span>
                                     </div>
                                 </div>
                             </div>
@@ -231,7 +231,7 @@ export default function CartPage() {
                     <div className="flex flex-col items-center justify-center py-16">
                         <div className="bg-white p-8 rounded-2xl shadow-sm text-center max-w-md mx-auto">
                             <div className="text-5xl mb-4">🛒</div>
-                            <h2 className="text-xl font-semibold mb-2">Votre panier est vide</h2>
+                            <h2 className="text-xl font-semibold text-black mb-2">Votre panier est vide</h2>
                             <p className="text-gray-500 mb-6">Vous n&#39;avez pas encore ajouté d&#39;articles à votre panier.</p>
                             <Link href="/products">
                                 <button className="bg-black text-white py-3 px-6 rounded-full font-medium">

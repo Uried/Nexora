@@ -67,7 +67,7 @@ const Header: React.FC<HeaderProps> = ({ defaultLanguage = 'FR' }) => {
         <div className="fixed inset-0 z-50 bg-white">
           <div className="container mx-auto px-4 py-3">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold">Menu</h2>
+              <h2 className="text-xl font-semibold text-black">Menu</h2>
               <button 
                 onClick={toggleMenu}
                 className="p-2 rounded-full hover:bg-gray-100"

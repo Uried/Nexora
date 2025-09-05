@@ -186,11 +186,11 @@ function ProductContent() {
           )}
 
           <div className="mb-4">
-            <h1 className="text-2xl font-bold">{product?.name || '—'}</h1>
+            <h1 className="text-2xl font-bold text-black">{product?.name || '—'}</h1>
             <p className="text-sm text-gray-600 mb-1">{product?.details?.brand || product?.categories?.[0]?.name || ''}</p>
             {product && (
               <div className="flex items-baseline gap-3">
-                <p className="text-2xl font-bold">
+                <p className="text-2xl font-bold text-black">
                   {((product.discountPrice && product.discountPrice > 0) ? product.discountPrice : product.price).toLocaleString('fr-FR')} FCFA
                 </p>
                 {hasDiscount && (

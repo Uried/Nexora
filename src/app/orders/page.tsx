@@ -140,7 +140,7 @@ export default function OrdersPage() {
             >
               <FiArrowLeft className="mr-2" /> Retour
             </Link>
-            <h1 className="text-2xl font-bold">Mes commandes</h1>
+            <h1 className="text-2xl font-bold text-black">Mes commandes</h1>
           </div>
           <button 
             onClick={() => router.push('/cart')} 

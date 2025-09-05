@@ -64,7 +64,7 @@ export default function LikedProductsPage() {
             >
               <FiArrowLeft className="mr-2" /> Retour
             </Link>
-            <h1 className="text-2xl font-bold">Articles favoris</h1>
+            <h1 className="text-2xl font-bold text-black">Articles favoris</h1>
           </div>
           <button 
             onClick={() => router.push('/cart')} 

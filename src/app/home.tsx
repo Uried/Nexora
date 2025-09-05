@@ -176,7 +176,7 @@ export default function HomePage() {
             <Image src={Profile_pic} alt="Profile" width={40} height={40} onClick={() => router.push('/account')} />
           </div>
           <div>
-            <h2 className="text-xl font-semibold">Salut!</h2>
+            <h2 className="text-xl font-semibold text-black">Salut!</h2>
             <p className="text-gray-500 text-base">Bon retour</p>
           </div>
         </div>
@@ -187,7 +187,7 @@ export default function HomePage() {
               <FiShoppingCart size={18} />
             </button>
             {cartItemCount > 0 && (
-              <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              <div className="absolute hidden -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                 {cartItemCount}
               </div>
             )}
@@ -244,7 +244,7 @@ export default function HomePage() {
 
       {/* Category Pills */}
       <div className="flex justify-between items-center mb-3">
-        <h3 className="text-lg font-semibold">Catégories</h3>
+        <h3 className="text-lg font-semibold text-black">Catégories</h3>
         <Link href="/categories" className="text-gray-500 text-sm bg-white px-2 py-1 rounded-full">
           Voir tout
         </Link>
@@ -264,7 +264,7 @@ export default function HomePage() {
       {/* Popular Perfumes / Produits tendance */}
       <div className="mb-6">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold">Produits tendance</h3>
+          <h3 className="text-lg font-semibold text-black">Produits tendance</h3>
           <Link href="/products" className="text-gray-500 text-sm bg-white px-2 py-1 rounded-full">
             Voir tout
           </Link>

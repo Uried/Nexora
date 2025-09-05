@@ -62,7 +62,7 @@ export default function CategoriesPage() {
             >
               <FiArrowLeft className="mr-2" /> Retour
             </Link>
-            <h1 className="text-2xl font-bold">Catégories</h1>
+            <h1 className="text-2xl font-bold text-black">Catégories</h1>
           </div>
           <button 
             onClick={() => router.push('/cart')} 

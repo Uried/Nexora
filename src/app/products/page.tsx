@@ -150,7 +150,7 @@ export default function ProductsPage() {
       <div className="pt-16 bg-[#fbf0ef] min-h-screen px-4 pb-20">
         {/* En-tête de la page */}
         <div className="py-6">
-          <h1 className="text-2xl font-bold mb-2">Tous nos produits</h1>
+          <h1 className="text-2xl font-bold text-black mb-2">Tous nos produits</h1>
           <p className="text-gray-500">Découvrez notre collection de parfums et accessoires</p>
         </div>
 
@@ -251,7 +251,7 @@ export default function ProductsPage() {
         ) : (
           <div className="flex flex-col items-center justify-center py-10">
             <div className="bg-white p-6 rounded-2xl shadow-sm text-center">
-              <p className="text-xl font-semibold mb-2">Aucun produit trouvé</p>
+              <p className="text-xl font-semibold text-black mb-2">Aucun produit trouvé</p>
               <p className="text-gray-500">Essayez de modifier vos filtres ou votre recherche</p>
             </div>
           </div>
