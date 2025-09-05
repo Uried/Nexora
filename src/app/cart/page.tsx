@@ -246,9 +246,9 @@ export default function CartPage() {
             {/* Modal de confirmation pour supprimer un article */}
             {itemToDelete !== null && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-                    <div className="bg-white rounded-2xl p-5 w-full max-w-sm">
+                    <div className="bg-white rounded-2xl p-5 w-full max-w-sm text-black">
                         <div className="flex justify-between items-center mb-4">
-                            <h3 className="font-semibold text-lg">Confirmer la suppression</h3>
+                            <h3 className="font-semibold text-lg text-black">Confirmer la suppression</h3>
                             <button onClick={cancelRemove} className="p-1">
                                 <FiX size={20} />
                             </button>
@@ -257,12 +257,12 @@ export default function CartPage() {
                             <div className="bg-red-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                                 <FiAlertTriangle size={30} className="text-red-500" />
                             </div>
-                            <p>Êtes-vous sûr de vouloir supprimer cet article du panier ?</p>
+                            <p className="text-black">Êtes-vous sûr de vouloir supprimer cet article du panier ?</p>
                         </div>
                         <div className="flex space-x-3">
                             <button
                                 onClick={cancelRemove}
-                                className="flex-1 py-2 border border-gray-300 rounded-full font-medium"
+                                className="flex-1 py-2 border border-gray-300 text-black rounded-full font-medium"
                             >
                                 Annuler
                             </button>
@@ -280,9 +280,9 @@ export default function CartPage() {
             {/* Modal de confirmation pour vider le panier */}
             {showClearCartConfirm && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-                    <div className="bg-white rounded-2xl p-5 w-full max-w-sm">
+                    <div className="bg-white rounded-2xl p-5 w-full max-w-sm text-black">
                         <div className="flex justify-between items-center mb-4">
-                            <h3 className="font-semibold text-lg">Vider le panier</h3>
+                            <h3 className="font-semibold text-lg text-black">Vider le panier</h3>
                             <button onClick={() => setShowClearCartConfirm(false)} className="p-1">
                                 <FiX size={20} />
                             </button>
@@ -291,13 +291,13 @@ export default function CartPage() {
                             <div className="bg-red-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                                 <FiAlertTriangle size={30} className="text-red-500" />
                             </div>
-                            <p>Êtes-vous sûr de vouloir vider complètement votre panier ?</p>
+                            <p className="text-black">Êtes-vous sûr de vouloir vider complètement votre panier ?</p>
                             <p className="text-sm text-gray-500 mt-2">Cette action ne peut pas être annulée.</p>
                         </div>
                         <div className="flex space-x-3">
                             <button
                                 onClick={() => setShowClearCartConfirm(false)}
-                                className="flex-1 py-2 border border-gray-300 rounded-full font-medium"
+                                className="flex-1 py-2 border border-gray-300 text-black rounded-full font-medium"
                             >
                                 Annuler
                             </button>
