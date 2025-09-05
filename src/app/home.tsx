@@ -4,8 +4,8 @@ import React, { useState, useEffect } from 'react';
 
 import Image from 'next/image';
 import Profile_pic from '../../src/assets/images/profile-pic.jpg';
-import Banner1 from '../../src/assets/images/banner1.png';
-import Banner2 from '../../src/assets/images/banner2.png';
+// import Banner1 from '../../src/assets/images/banner1.png';
+// import Banner2 from '../../src/assets/images/banner2.png';
 import PerfumBanner from '../../src/assets/images/kasi_perfum.jpg';
 import Link from 'next/link';
 import { FiSearch, FiShoppingCart } from 'react-icons/fi';
