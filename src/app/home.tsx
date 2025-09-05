@@ -32,6 +32,9 @@ export default function HomePage() {
   const [loadingProducts, setLoadingProducts] = useState<boolean>(true);
   const [errorProducts, setErrorProducts] = useState<string | null>(null);
   const [currentCategoryId, setCurrentCategoryId] = useState<string | null>(null);
+  // États pour la pagination
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [productsPerPage] = useState<number>(6);
 
   // État pour gérer les produits aimés
   const [likedProducts, setLikedProducts] = useState<{ [key: string]: boolean }>({ 'Black Opium': true });
@@ -121,6 +124,11 @@ export default function HomePage() {
     };
     load();
   }, [currentCategoryId]);
+
+  // Réinitialiser la pagination quand les filtres changent
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategories, currentCategoryId]);
 
   // Fonction pour gérer les likes des produits
   const toggleLike = (productName: string) => {
@@ -278,50 +286,113 @@ export default function HomePage() {
 
         {/* Product Grid */}
         <div className="grid grid-cols-2 gap-4">
-          {(currentCategoryId ? products : products.filter(p => p.isTrending)).slice(0, 6).map((p) => {
-            const img = (p.images && p.images.length > 0) ? p.images[0] : null;
-            const price = p.discountPrice && p.discountPrice > 0 ? p.discountPrice : p.price;
-            return (
-              <div 
-                key={p.id}
-                className="bg-white rounded-2xl p-2 relative shadow-sm cursor-pointer"
-                onClick={() => router.push(`/product?id=${p.id}`)}
-              >
-                <div className="relative w-full aspect-square mb-3 flex items-center justify-center overflow-hidden rounded-xl">
-                  {img ? (
-                    <Image src={img} alt={p.name} className="object-cover w-full h-full" width={150} height={150} />
-                  ) : (
-                    <div className="w-full h-full bg-gray-200" />
-                  )}
-                  <button
-                    className="absolute top-2 right-2 bg-white rounded-full p-1.5 shadow-sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleLike(p.name);
-                    }}
-                  >
-                    {likedProducts[p.name] ?
-                      <BsHeartFill size={16} color="red" /> :
-                      <BsHeart size={16} color="black" />
-                    }
-                  </button>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className='font-semibold'>
-                    <h4 className="text-sm line-clamp-1">{p.name}</h4>
-                    <p className="text-gray-500 text-xs mb-2">{price.toLocaleString('fr-FR')} FCFA</p>
+          {(() => {
+            // Filtrer les produits selon la catégorie ou les tendances
+            const filteredProducts = currentCategoryId ? products : products.filter(p => p.isTrending);
+            
+            // Pagination
+            const indexOfLastProduct = currentPage * productsPerPage;
+            const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+            const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+            
+            return currentProducts.map((p) => {
+              const img = (p.images && p.images.length > 0) ? p.images[0] : null;
+              const price = p.discountPrice && p.discountPrice > 0 ? p.discountPrice : p.price;
+              return (
+                <div 
+                  key={p.id}
+                  className="bg-white rounded-2xl p-2 relative shadow-sm cursor-pointer"
+                  onClick={() => router.push(`/product?id=${p.id}`)}
+                >
+                  <div className="relative w-full aspect-square mb-3 flex items-center justify-center overflow-hidden rounded-xl">
+                    {img ? (
+                      <Image src={img} alt={p.name} className="object-cover w-full h-full" width={150} height={150} />
+                    ) : (
+                      <div className="w-full h-full bg-gray-200" />
+                    )}
+                    <button
+                      className="absolute top-2 right-2 bg-white rounded-full p-1.5 shadow-sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleLike(p.name);
+                      }}
+                    >
+                      {likedProducts[p.name] ?
+                        <BsHeartFill size={16} color="red" /> :
+                        <BsHeart size={16} color="black" />
+                      }
+                    </button>
                   </div>
+                  <div className="flex items-center justify-between">
+                    <div className='font-semibold'>
+                      <h4 className="text-sm line-clamp-1">{p.name}</h4>
+                      <p className="text-gray-500 text-xs mb-2">{price.toLocaleString('fr-FR')} FCFA</p>
+                    </div>
+                    <button 
+                      className="bg-black text-white rounded-full p-2 shadow-sm"
+                      onClick={() => router.push(`/product?id=${p.id}`)}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"><path d="M3.977 9.84A2 2 0 0 1 5.971 8h12.058a2 2 0 0 1 1.994 1.84l.803 10A2 2 0 0 1 18.833 22H5.167a2 2 0 0 1-1.993-2.16z" /><path d="M16 11V6a4 4 0 0 0-4-4v0a4 4 0 0 0-4 4v5" /></g></svg>
+                    </button>
+                  </div>
+                </div>
+              );
+            });
+          })()}
+        </div>
+        
+        {/* Pagination */}
+        {(() => {
+          const filteredProducts = currentCategoryId ? products : products.filter(p => p.isTrending);
+          const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+          
+          // Fonction pour changer de page
+          const paginate = (pageNumber: number) => {
+            setCurrentPage(pageNumber);
+            // Remonter en haut de la section produits
+            const productsSection = document.querySelector('.grid.grid-cols-2');
+            if (productsSection) {
+              productsSection.scrollIntoView({ behavior: 'smooth' });
+            }
+          };
+          
+          // Afficher la pagination seulement s'il y a plus d'une page
+          if (filteredProducts.length > 0 && totalPages > 1) {
+            return (
+              <div className="mt-6 flex justify-center">
+                <div className="flex items-center space-x-2">
                   <button 
-                    className="bg-black text-white rounded-full p-2 shadow-sm"
-                    onClick={() => router.push(`/product?id=${p.id}`)}
+                    onClick={() => currentPage > 1 && paginate(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className={`px-3 py-1 rounded-full ${currentPage === 1 ? 'bg-gray-200 text-gray-500' : 'bg-white text-black'}`}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"><path d="M3.977 9.84A2 2 0 0 1 5.971 8h12.058a2 2 0 0 1 1.994 1.84l.803 10A2 2 0 0 1 18.833 22H5.167a2 2 0 0 1-1.993-2.16z" /><path d="M16 11V6a4 4 0 0 0-4-4v0a4 4 0 0 0-4 4v5" /></g></svg>
+                    &lt;
+                  </button>
+                  
+                  {/* Afficher les numéros de page */}
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
+                    <button
+                      key={number}
+                      onClick={() => paginate(number)}
+                      className={`w-8 h-8 rounded-full flex items-center justify-center ${currentPage === number ? 'bg-black text-white' : 'bg-white text-black'}`}
+                    >
+                      {number}
+                    </button>
+                  ))}
+                  
+                  <button 
+                    onClick={() => currentPage < totalPages && paginate(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className={`px-3 py-1 rounded-full ${currentPage === totalPages ? 'bg-gray-200 text-gray-500' : 'bg-white text-black'}`}
+                  >
+                    &gt;
                   </button>
                 </div>
               </div>
             );
-          })}
-        </div>
+          }
+          return null;
+        })()}
       </div>
     </div>
   );
