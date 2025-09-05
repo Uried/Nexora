@@ -43,46 +43,46 @@ export default function HomePage() {
   const [cartItemCount] = useState<number>(3);
   const router = useRouter();
 
-  // États pour le carrousel de bannières
-  const [currentBanner, setCurrentBanner] = useState<number>(0);
-  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+  // États pour le carrousel de bannières (commentés car non utilisés actuellement)
+  // const [currentBanner, setCurrentBanner] = useState<number>(0);
+  // const [isAnimating, setIsAnimating] = useState<boolean>(false);
   
-  // Données des bannières (texte et image)
-  const bannerData = [
-    {
-      title: "Votre style, votre beauté",
-      description: "Découvrez la meilleure collection. Trouvez votre parfum signature aujourd'hui.",
-      buttonText: "Commandez maintenant",
-      image: Banner1
-    },
-    {
-      title: "Sacs à tomber!",
-      description: "Craque pour nos nouveaux sacs trop stylés! Parfaits pour compléter ton look et faire tourner les têtes.",
-      buttonText: "Je veux voir ça!",
-      image: Banner2
-    }
-  ];
+  // Données des bannières (texte et image) - commentées car non utilisées actuellement
+  // const bannerData = [
+  //   {
+  //     title: "Votre style, votre beauté",
+  //     description: "Découvrez la meilleure collection. Trouvez votre parfum signature aujourd'hui.",
+  //     buttonText: "Commandez maintenant",
+  //     image: Banner1
+  //   },
+  //   {
+  //     title: "Sacs à tomber!",
+  //     description: "Craque pour nos nouveaux sacs trop stylés! Parfaits pour compléter ton look et faire tourner les têtes.",
+  //     buttonText: "Je veux voir ça!",
+  //     image: Banner2
+  //   }
+  // ];
   
-  // Effet pour changer de bannière toutes les 3 secondes avec effet de fondu
-  useEffect(() => {
-    const changeBanner = () => {
-      // Démarrer l'animation de fondu
-      setIsAnimating(true);
-      
-      // Attendre que l'animation de sortie soit terminée avant de changer la bannière
-      setTimeout(() => {
-        setCurrentBanner(prev => (prev + 1) % bannerData.length);
-        
-        // Attendre un court instant puis démarrer l'animation d'entrée
-        setTimeout(() => {
-          setIsAnimating(false);
-        }, 50);
-      }, 500);
-    };
-    
-    const interval = setInterval(changeBanner, 5000);
-    return () => clearInterval(interval);
-  }, [bannerData.length]);
+  // Effet pour changer de bannière toutes les 3 secondes avec effet de fondu - commenté car non utilisé actuellement
+  // useEffect(() => {
+  //   const changeBanner = () => {
+  //     // Démarrer l'animation de fondu
+  //     setIsAnimating(true);
+  //     
+  //     // Attendre que l'animation de sortie soit terminée avant de changer la bannière
+  //     setTimeout(() => {
+  //       setCurrentBanner(prev => (prev + 1) % bannerData.length);
+  //       
+  //       // Attendre un court instant puis démarrer l'animation d'entrée
+  //       setTimeout(() => {
+  //         setIsAnimating(false);
+  //       }, 50);
+  //     }, 500);
+  //   };
+  //   
+  //   const interval = setInterval(changeBanner, 5000);
+  //   return () => clearInterval(interval);
+  // }, [bannerData.length]);
 
   // Charger les catégories depuis l'API
   useEffect(() => {

@@ -28,7 +28,7 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
       clearInterval(imageInterval);
       clearTimeout(splashTimer);
     };
-  }, [onComplete]);
+  }, [onComplete, images.length]);
 
   return (
     <div className="fixed inset-0 bg-white flex items-center justify-center z-50">
