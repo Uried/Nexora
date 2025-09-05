@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Profile_pic from '../../src/assets/images/profile-pic.jpg';
 import Banner1 from '../../src/assets/images/banner1.png';
 import Banner2 from '../../src/assets/images/banner2.png';
+import PerfumBanner from '../../src/assets/images/kasi_perfum.jpg';
 import Link from 'next/link';
 import { FiSearch, FiShoppingCart } from 'react-icons/fi';
 import { BsHeart, BsHeartFill } from 'react-icons/bs';
@@ -224,7 +225,7 @@ export default function HomePage() {
 
 
       {/* Featured Collection - Carousel */}
-      <div className="bg-black text-white rounded-3xl p-3 mb-6 overflow-hidden">
+      {/* <div className="bg-black text-white rounded-3xl p-3 mb-6 overflow-hidden">
         <div className="flex justify-between items-center">
           <div className="w-2/3">
             <div className={`transition-opacity duration-500 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}>
@@ -248,7 +249,11 @@ export default function HomePage() {
           </div>
         </div>
 
-      </div>
+      </div> */}
+
+        <div className="rounded-3xl p-3 mb-6 overflow-hidden">
+          <Image src={PerfumBanner} alt="Perfume Banner" className="w-full h-auto rounded-md" />
+          </div>
 
       {/* Category Pills */}
       <div className="flex justify-between items-center mb-3">
