@@ -35,7 +35,7 @@ export default function ProductsPage() {
 
   // Charger les catégories depuis l'API
   useEffect(() => {
-    const rawBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.kasi.market';
+    const rawBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api';
     const baseUrl = rawBase.replace(/\/$/, '');
     const url = `${baseUrl}/api/categories`;
     const load = async () => {
@@ -53,7 +53,7 @@ export default function ProductsPage() {
 
   // Charger les produits (tous ou par catégorie)
   useEffect(() => {
-    const rawBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.kasi.market';
+    const rawBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api';
     const baseUrl = rawBase.replace(/\/$/, '');
     const url = currentCategoryId
       ? `${baseUrl}/api/products/category/${currentCategoryId}`

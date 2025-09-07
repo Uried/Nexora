@@ -42,7 +42,7 @@ function ProductContent() {
       setLoading(false);
       return;
     }
-    const rawBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.kasi.market';
+    const rawBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api';
     const baseUrl = rawBase.replace(/\/$/, '');
 
     const fetchById = async () => {

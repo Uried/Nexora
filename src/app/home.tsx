@@ -86,7 +86,7 @@ export default function HomePage() {
 
   // Charger les catégories depuis l'API
   useEffect(() => {
-    const rawBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.kasi.market';
+    const rawBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
     const baseUrl = rawBase.replace(/\/$/, '');
     const url = `${baseUrl}/api/categories`;
     const load = async () => {
@@ -104,7 +104,7 @@ export default function HomePage() {
 
   // Charger les produits depuis l'API (tous ou par catégorie)
   useEffect(() => {
-    const rawBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.kasi.market';
+    const rawBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
     const baseUrl = rawBase.replace(/\/$/, '');
     const url = currentCategoryId
       ? `${baseUrl}/api/products/category/${currentCategoryId}`
@@ -192,7 +192,7 @@ export default function HomePage() {
         <div className="flex items-center space-x-3">
           
           <div className="relative" onClick={() => router.push('/cart')}>
-            <button className="p-3 rounded-full bg-white shadow-sm">
+            <button className="p-3 rounded-full bg-white text-black shadow-sm">
               <FiShoppingCart size={18} />
             </button>
             {cartItemCount > 0 && (
