@@ -73,7 +73,7 @@ export default function CategoriesPage() {
         </div>
 
         {/* Titre principal */}
-        <h2 className="text-xl font-bold mb-4">Nos catégories de produits</h2>
+        <h2 className="text-xl font-bold text-black mb-4">Nos catégories de produits</h2>
 
         {loading && (
           <p className="text-gray-600 mb-8">Chargement des catégories...</p>
