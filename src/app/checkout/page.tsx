@@ -179,7 +179,7 @@ export default function CheckoutPage() {
                 };
 
                 // Appeler l'API pour créer la commande
-                const response = await fetch('http://localhost:8000/api/orders', {
+                const response = await fetch('https://api.kasi.market/api/orders', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
