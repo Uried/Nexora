@@ -238,7 +238,7 @@ export default function ProductsPage() {
                   )}
                 </div>
                 <div className="font-semibold">
-                  <h4 className="text-sm">{product.details?.brand || product.categories?.[0]?.name || '—'}</h4>
+                  <h4 className="text-sm text-black">{product.details?.brand || product.categories?.[0]?.name || '—'}</h4>
                   <p className="text-xs text-gray-700">{product.name}</p>
                   <p className="text-gray-500 text-xs mb-2">
                     {((product.discountPrice && product.discountPrice > 0) ? product.discountPrice : product.price).toLocaleString('fr-FR')} FCFA

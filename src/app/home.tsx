@@ -363,7 +363,7 @@ export default function HomePage() {
                   </div>
                   <div className="flex items-center justify-between">
                     <div className='font-semibold'>
-                      <h4 className="text-sm line-clamp-1">{p.name}</h4>
+                      <h4 className="text-sm line-clamp-1 text-black">{p.name}</h4>
                       <p className="text-gray-500 text-xs mb-2">{price.toLocaleString('fr-FR')} FCFA</p>
                     </div>
                     <button 
