@@ -104,7 +104,7 @@ function ProductContent() {
   return (
     <>
       <Header defaultLanguage="FR" />
-      <div className="pt-16 bg-[#fbf0ef]  min-h-screen">
+      <div className="pt-16 bg-[#fbf0ef] h-screen overflow-hidden flex flex-col">
         {/* Product Image / Slider */}
         <div className="relative w-full aspect-square mb-0" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
           <div className="absolute top-4 left-4 right-4 z-10 flex justify-between">
@@ -175,7 +175,7 @@ function ProductContent() {
         </div>
 
         {/* Product Details Card */}
-        <div className="bg-white rounded-t-3xl px-5 pt-6 pb-20 -mt-2 relative z-10">
+        <div className="bg-white rounded-t-3xl px-5 pt-6 pb-32 -mt-2 relative z-10 flex-1 flex flex-col">
           {/* Discount Badge */}
           {hasDiscount && discountPercent && (
             <div className="flex justify-center mb-4">
@@ -202,45 +202,82 @@ function ProductContent() {
             )}
           </div>
 
-          {/* Product Description */}
-          <p className="text-gray-700 mb-8 whitespace-pre-line">
-            {product?.description || '—'}
-          </p>
+          {/* Product Description - Fixed height scrollable area */}
+          <div className="h-32 mb-4 relative overflow-hidden">
+            <div className="h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 pr-2">
+              <p className="text-gray-700 whitespace-pre-line pb-4">
+                {product?.description || '—'}
+              </p>
+            </div>
+            {product?.description && product.description.length > 200 && (
+              <div className="absolute bottom-0 right-0 bg-gradient-to-l from-white via-white to-transparent pl-8 pr-2 py-1">
+                <span className="text-xs text-gray-500 flex items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M7 13l3 3 7-7"/>
+                    <path d="M7 6l3 3 7-7"/>
+                  </svg>
+                  Faites défiler pour voir plus
+                </span>
+              </div>
+            )}
+          </div>
 
-          {/* Quantity and Add to Cart */}
-          <div className="flex justify-between items-center">
-            <div className="flex items-center px-6 py-3 border-2 border-black text-black rounded-full">
-              <button className="px-4 text-black" onClick={decreaseQuantity}>
-                <FiMinus />
-              </button>
-              <span className="px-4 text-black">{quantity}</span>
-              <button className="px-4 text-black" onClick={increaseQuantity}>
-                <FiPlus />
+        </div>
+        
+        {/* Fixed CTA Section */}
+        <div className="fixed bottom-0 left-0 right-0 bg-white px-5 py-4 z-20">
+          <div className="space-y-3">
+            {/* Quantity and Add to Cart */}
+            <div className="flex flex-row gap-3 justify-between items-center">
+              <div className="flex items-center justify-center px-4 sm:px-6 py-2 border-2 border-black text-black rounded-full">
+                <button className="px-3 sm:px-4 text-black" onClick={decreaseQuantity}>
+                  <FiMinus />
+                </button>
+                <span className="px-3 sm:px-4 text-black min-w-[2rem] text-center">{quantity}</span>
+                <button className="px-3 sm:px-4 text-black" onClick={increaseQuantity}>
+                  <FiPlus />
+                </button>
+              </div>
+              <button
+                disabled={!product || adding}
+                onClick={async () => {
+                  if (!product) return;
+                  setAdding(true);
+                  setAddMsg(null);
+                  const priceNow = (product.discountPrice && product.discountPrice > 0) ? product.discountPrice : product.price;
+                  const res = await addToCart(product.id, quantity, priceNow);
+                  setAdding(false);
+                  setAddMsg(res.ok ? 'Ajouté au panier' : (res.message || 'Erreur'));
+                  if (res.ok) {
+                    setTimeout(() => setAddMsg(null), 2000);
+                  }
+                }}
+                className={`rounded-full px-3 sm:px-4 py-3 flex items-center justify-center gap-1 text-xs sm:text-sm ${adding ? 'bg-gray-400 text-white' : 'bg-black text-white'}`}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" className="flex-shrink-0"><g fill="none" stroke="#fff" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"><circle cx="9.549" cy="19.049" r="1.701"/><circle cx="16.96" cy="19.049" r="1.701"/><path d="m5.606 5.555l2.01 6.364c.309.978.463 1.467.76 1.829c.26.32.599.567.982.72c.435.173.947.173 1.973.173h3.855c1.026 0 1.538 0 1.972-.173c.384-.153.722-.4.983-.72c.296-.362.45-.851.76-1.829l.409-1.296l.24-.766l.331-1.05a2.5 2.5 0 0 0-2.384-3.252zm0 0l-.011-.037a7 7 0 0 0-.14-.42a2.92 2.92 0  0 0-2.512-1.84C2.84 3.25 2.727 3.25 2.5 3.25"/></g></svg>
+                <span className="whitespace-nowrap">{adding ? 'Ajout...' : 'Ajouter au panier'}</span>
               </button>
             </div>
+            
+            {/* Voir le panier button */}
             <button
-              disabled={!product || adding}
-              onClick={async () => {
-                if (!product) return;
-                setAdding(true);
-                setAddMsg(null);
-                const priceNow = (product.discountPrice && product.discountPrice > 0) ? product.discountPrice : product.price;
-                const res = await addToCart(product.id, quantity, priceNow);
-                setAdding(false);
-                setAddMsg(res.ok ? 'Ajouté au panier' : (res.message || 'Erreur'));
-                if (res.ok) {
-                  setTimeout(() => setAddMsg(null), 2000);
-                }
-              }}
-              className={`rounded-full px-6 py-3 flex items-center ${adding ? 'bg-gray-400 text-white' : 'bg-black text-white'}`}
+              onClick={() => router.push('/cart')}
+              className="w-full py-3 px-4 border-2 border-black text-black rounded-full flex items-center justify-center gap-2 hover:bg-black hover:text-white transition-colors duration-200"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="#fff" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"><circle cx="9.549" cy="19.049" r="1.701"/><circle cx="16.96" cy="19.049" r="1.701"/><path d="m5.606 5.555l2.01 6.364c.309.978.463 1.467.76 1.829c.26.32.599.567.982.72c.435.173.947.173 1.973.173h3.855c1.026 0 1.538 0 1.972-.173c.384-.153.722-.4.983-.72c.296-.362.45-.851.76-1.829l.409-1.296l.24-.766l.331-1.05a2.5 2.5 0 0 0-2.384-3.252zm0 0l-.011-.037a7 7 0 0 0-.14-.42a2.92 2.92 0  0 0-2.512-1.84C2.84 3.25 2.727 3.25 2.5 3.25"/></g></svg>
-              {adding ? 'Ajout...' : 'Ajouter au panier'}
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" className="flex-shrink-0">
+                <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
+                  <circle cx="9.549" cy="19.049" r="1.701"/>
+                  <circle cx="16.96" cy="19.049" r="1.701"/>
+                  <path d="m5.606 5.555l2.01 6.364c.309.978.463 1.467.76 1.829c.26.32.599.567.982.72c.435.173.947.173 1.973.173h3.855c1.026 0 1.538 0 1.972-.173c.384-.153.722-.4.983-.72c.296-.362.45-.851.76-1.829l.409-1.296l.24-.766l.331-1.05a2.5 2.5 0 0 0-2.384-3.252zm0 0l-.011-.037a7 7 0 0 0-.14-.42a2.92 2.92 0  0 0-2.512-1.84C2.84 3.25 2.727 3.25 2.5 3.25"/>
+                </g>
+              </svg>
+              <span>Voir le panier</span>
             </button>
+            
+            {addMsg && (
+              <div className="mt-2 text-center text-sm text-gray-700">{addMsg}</div>
+            )}
           </div>
-          {addMsg && (
-            <div className="mt-3 text-center text-sm text-gray-700">{addMsg}</div>
-          )}
         </div>
       </div>
     </>
