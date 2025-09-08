@@ -191,10 +191,23 @@ export default function ProductsPage() {
             {currentProducts.map((product) => (
               <div
                 key={product.id}
-                className="bg-white rounded-2xl p-2 relative shadow-sm cursor-pointer"
+                className="bg-white rounded-2xl p-2 relative shadow-sm cursor-pointer group overflow-hidden"
                 onClick={() => router.push(`/product?id=${product.id}`)}
+                style={{
+                  background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #ffffff 100%)',
+                  position: 'relative'
+                }}
               >
                 <div className="relative w-full aspect-square mb-3 flex items-center justify-center overflow-hidden rounded-xl">
+                  {/* Effet shimmer sur l'image */}
+                  <div className="absolute inset-0 pointer-events-none z-10">
+                    <div 
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent"
+                      style={{
+                        animation: 'shimmer 6s ease-in-out infinite',
+                      }}
+                    />
+                  </div>
                   {product.images && product.images.length > 0 ? (
                     <Image
                       src={product.images[0]}

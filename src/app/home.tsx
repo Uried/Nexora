@@ -251,9 +251,29 @@ export default function HomePage() {
 
       </div> */}
 
-        <div className="rounded-3xl p-3 mb-6 overflow-hidden">
-          <Image src={PerfumBanner} alt="Perfume Banner" className="w-full h-auto rounded-md" />
+        <div className="rounded-3xl p-3 mb-6 overflow-hidden relative group">
+          <div 
+            className="relative overflow-hidden rounded-md"
+            style={{
+              animation: 'bannerFloat 4s ease-in-out infinite'
+            }}
+          >
+            {/* Effet shimmer sur la bannière */}
+            <div className="absolute inset-0 pointer-events-none z-10">
+              <div 
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent w-1/3 h-full"
+                style={{
+                  animation: 'bannerShimmer 5s ease-in-out infinite',
+                }}
+              />
+            </div>
+            <Image 
+              src={PerfumBanner} 
+              alt="Perfume Banner" 
+              className="w-full h-auto rounded-md transition-transform duration-300 group-hover:scale-105" 
+            />
           </div>
+        </div>
 
       {/* Category Pills */}
       <div className="flex justify-between items-center mb-3">
@@ -292,8 +312,8 @@ export default function HomePage() {
         {/* Product Grid */}
         <div className="grid grid-cols-2 gap-4">
           {(() => {
-            // Filtrer les produits selon la catégorie ou les tendances
-            const filteredProducts = currentCategoryId ? products : products.filter(p => p.isTrending);
+            // Filtrer les produits selon la catégorie
+            const filteredProducts = currentCategoryId ? products : products;
             
             // Pagination
             const indexOfLastProduct = currentPage * productsPerPage;
@@ -306,10 +326,23 @@ export default function HomePage() {
               return (
                 <div 
                   key={p.id}
-                  className="bg-white rounded-2xl p-2 relative shadow-sm cursor-pointer"
+                  className="bg-white rounded-2xl p-2 relative shadow-sm cursor-pointer group overflow-hidden"
                   onClick={() => router.push(`/product?id=${p.id}`)}
+                  style={{
+                    background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #ffffff 100%)',
+                    position: 'relative'
+                  }}
                 >
                   <div className="relative w-full aspect-square mb-3 flex items-center justify-center overflow-hidden rounded-xl">
+                    {/* Effet shimmer sur l'image */}
+                    <div className="absolute inset-0 pointer-events-none z-10">
+                      <div 
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent"
+                        style={{
+                          animation: 'shimmer 6s ease-in-out infinite',
+                        }}
+                      />
+                    </div>
                     {img ? (
                       <Image src={img} alt={p.name} className="object-cover w-full h-full" width={150} height={150} />
                     ) : (
@@ -348,7 +381,7 @@ export default function HomePage() {
         
         {/* Pagination */}
         {(() => {
-          const filteredProducts = currentCategoryId ? products : products.filter(p => p.isTrending);
+          const filteredProducts = currentCategoryId ? products : products;
           const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
           
           // Fonction pour changer de page

@@ -127,3 +127,42 @@ body {
   color: var(--foreground);
   font-family: 'Noyh-SemiLight';
 }
+
+/* Animation shimmer pour les cartes */
+@keyframes shimmer {
+  0%, 95% {
+    transform: translateX(-100%) skewX(-12deg);
+    opacity: 0;
+  }
+  2%, 12% {
+    opacity: 1;
+  }
+  20% {
+    transform: translateX(200%) skewX(-12deg);
+    opacity: 0;
+  }
+}
+
+/* Animation pour la bannière d'accueil */
+@keyframes bannerFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.02);
+  }
+}
+
+@keyframes bannerShimmer {
+  0%, 92% {
+    transform: translateX(-100%) rotate(25deg);
+    opacity: 0;
+  }
+  3%, 8% {
+    opacity: 0.6;
+  }
+  12% {
+    transform: translateX(150%) rotate(25deg);
+    opacity: 0;
+  }
+}
