@@ -211,7 +211,18 @@ export default function CheckoutPage() {
 
                 // Rediriger vers WhatsApp avec le message préparé
                 const whatsappUrl = prepareWhatsAppMessage();
-                window.open(whatsappUrl, '_blank');
+                
+                // Détecter si c'est un appareil mobile iOS
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                
+                if (isIOS || isMobile) {
+                    // Sur mobile (surtout iOS), utiliser window.location.href
+                    window.location.href = whatsappUrl;
+                } else {
+                    // Sur desktop, utiliser window.open
+                    window.open(whatsappUrl, '_blank');
+                }
                 
                 // Rediriger vers la page de confirmation
                 setTimeout(() => {
