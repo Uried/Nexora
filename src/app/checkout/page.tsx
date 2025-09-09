@@ -135,6 +135,7 @@ export default function CheckoutPage() {
         
         message += `\n*Sous-total:* ${formatPrice(subtotal)}\n`;
         message += `*Frais de livraison:* ${formatPrice(shippingFee)}\n`;
+        message += `*Note:* (1000 - 5000 FCFA à négocier en fonction de la distance)\n`;
         message += `*TOTAL:* ${formatPrice(total)}\n\n`;
         
         if (formData.notes) {
