@@ -2,7 +2,7 @@
 
 import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
-import { FiMinus, FiPlus, FiArrowLeft, FiShoppingCart } from 'react-icons/fi';
+import { FiMinus, FiPlus, FiArrowLeft, FiShoppingCart, FiAlertTriangle } from 'react-icons/fi';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Header from '../../components/Header';
 import { addToCart } from '../../lib/cart';
@@ -19,6 +19,7 @@ function ProductContent() {
     description?: string;
     price: number;
     discountPrice?: number;
+    stock?: number;
     images?: string[];
     details?: { brand?: string };
     categories?: Category[];
@@ -31,6 +32,7 @@ function ProductContent() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [adding, setAdding] = useState(false);
   const [addMsg, setAddMsg] = useState<string | null>(null);
+  const [showStockModal, setShowStockModal] = useState(false);
 
   // Swipe support
   const touchStartX = useRef<number | null>(null);
@@ -242,6 +244,13 @@ function ProductContent() {
                 disabled={!product || adding}
                 onClick={async () => {
                   if (!product) return;
+                  
+                  // Vérifier le stock avant d'ajouter au panier
+                  if (product.stock !== undefined && product.stock < quantity) {
+                    setShowStockModal(true);
+                    return;
+                  }
+                  
                   setAdding(true);
                   setAddMsg(null);
                   const priceNow = (product.discountPrice && product.discountPrice > 0) ? product.discountPrice : product.price;
@@ -280,6 +289,46 @@ function ProductContent() {
           </div>
         </div>
       </div>
+
+      {/* Modal de stock insuffisant */}
+      {showStockModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm mx-auto">
+            <div className="mb-6 text-center">
+              <div className="bg-red-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <FiAlertTriangle size={30} className="text-red-500" />
+              </div>
+              <p className="text-black font-semibold mb-2">Stock insuffisant</p>
+              <p className="text-sm text-gray-500">
+                Seulement {product?.stock || 0} article{(product?.stock || 0) > 1 ? 's' : ''} disponible{(product?.stock || 0) > 1 ? 's' : ''} en stock.
+              </p>
+              <p className="text-sm text-gray-500 mt-1">
+                Vous avez sélectionné {quantity} article{quantity > 1 ? 's' : ''}.
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowStockModal(false)}
+                className="flex-1 py-3 px-4 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition-colors duration-200"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={() => {
+                  if (product?.stock && product.stock > 0) {
+                    setQuantity(product.stock);
+                  }
+                  setShowStockModal(false);
+                }}
+                disabled={!product?.stock || product.stock === 0}
+                className="flex-1 py-3 px-4 bg-black text-white rounded-full hover:bg-gray-800 transition-colors duration-200 disabled:bg-gray-400"
+              >
+                Ajuster ({product?.stock || 0})
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
