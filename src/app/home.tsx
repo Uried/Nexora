@@ -39,7 +39,10 @@ export default function HomePage() {
   const [productsPerPage] = useState<number>(6);
   // États pour la pagination desktop
   const [currentDesktopPage, setCurrentDesktopPage] = useState<number>(1);
-  const [desktopProductsPerPage] = useState<number>(8);
+  const [desktopProductsPerPage] = useState<number>(12);
+
+  // État pour la recherche en temps réel
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   // État pour gérer les produits aimés
   const [likedProducts, setLikedProducts] = useState<{ [key: string]: boolean }>({ 'Black Opium': true });
@@ -134,7 +137,7 @@ export default function HomePage() {
   useEffect(() => {
     setCurrentPage(1);
     setCurrentDesktopPage(1);
-  }, [selectedCategories, currentCategoryId]);
+  }, [selectedCategories, currentCategoryId, searchQuery]);
 
   // Fonction pour gérer les likes des produits
   const toggleLike = (productName: string) => {
@@ -180,6 +183,16 @@ export default function HomePage() {
     }
   };
 
+  // Fonction pour filtrer les produits par recherche
+  const filterProductsBySearch = (products: Product[]) => {
+    if (!searchQuery.trim()) return products;
+    
+    return products.filter(product =>
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (product.description && product.description.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+  };
+
   return (
     <div className="bg-[#fbf0ef] min-h-screen">
       {/* Desktop Header - Hidden on mobile */}
@@ -187,7 +200,7 @@ export default function HomePage() {
         <div className="container mx-auto px-6 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-8">
-              <div className="flex items-center">
+              <div className="flex items-center cursor-pointer">
                 <Image 
                   src={Logo} 
                   alt="Nexora Logo" 
@@ -204,16 +217,18 @@ export default function HomePage() {
                     type="text"
                     placeholder="Recherchez produits ou marques ici"
                     className="bg-transparent border-none outline-none flex-grow text-sm"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </div>
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <button className="text-sm text-gray-600 hover:text-black">À propos de Kasi</button>
+              <button className="text-sm text-gray-600 hover:text-black cursor-pointer">À propos de Kasi</button>
               {/* <button className="text-sm text-gray-600 hover:text-black">Soins Nexora</button> */}
               {/* <button className="text-sm text-gray-600 hover:text-black">Promo</button> */}
-              <button className="text-sm bg-black text-white px-4 py-2 rounded">S'inscrire</button>
-              <button className="text-sm border border-gray-300 px-4 py-2 rounded">Connexion</button>
+              <button className="text-sm bg-black text-white px-4 py-2 rounded cursor-pointer">S'inscrire</button>
+              <button className="text-sm border border-gray-300 px-4 py-2 rounded cursor-pointer">Connexion</button>
             </div>
           </div>
         </div>
@@ -316,6 +331,8 @@ export default function HomePage() {
             type="text"
             placeholder="Trouvez votre article"
             className="bg-transparent border-none outline-none flex-grow text-sm"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
         <button 
@@ -415,8 +432,9 @@ export default function HomePage() {
         {/* Product Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {(() => {
-            // Filtrer les produits selon la catégorie
-            const filteredProducts = currentCategoryId ? products : products;
+            // Filtrer les produits selon la catégorie et la recherche
+            let filteredProducts = currentCategoryId ? products : products;
+            filteredProducts = filterProductsBySearch(filteredProducts);
             
             // Pagination
             const indexOfLastProduct = currentPage * productsPerPage;
@@ -484,7 +502,8 @@ export default function HomePage() {
         
         {/* Pagination */}
         {(() => {
-          const filteredProducts = currentCategoryId ? products : products;
+          let filteredProducts = currentCategoryId ? products : products;
+          filteredProducts = filterProductsBySearch(filteredProducts);
           const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
           
           // Fonction pour changer de page
@@ -551,12 +570,12 @@ export default function HomePage() {
              
             </div>
             <div className="flex space-x-2">
-              <button className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200">
+              <button className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 cursor-pointer">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
               </button>
-              <button className="w-10 h-10 bg-black rounded-full flex items-center justify-center text-white hover:bg-gray-800">
+              <button className="w-10 h-10 bg-black rounded-full flex items-center justify-center text-white hover:bg-gray-800 cursor-pointer">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                 </svg>
@@ -565,8 +584,8 @@ export default function HomePage() {
           </div>
           
           {loadingProducts && (
-            <div className="grid grid-cols-4 gap-6">
-              {[...Array(8)].map((_, index) => (
+            <div className="grid grid-cols-6 gap-4">
+              {[...Array(12)].map((_, index) => (
                 <div key={index} className="bg-white border rounded-lg overflow-hidden animate-pulse">
                   <div className="aspect-square bg-gray-200"></div>
                   <div className="p-4">
@@ -584,10 +603,11 @@ export default function HomePage() {
           
           {!loadingProducts && !errorProducts && products.length > 0 && (
             <>
-              <div className="grid grid-cols-4 gap-6">
+              <div className="grid grid-cols-6 gap-4">
                 {(() => {
-                  // Filtrer les produits selon la catégorie
-                  const filteredProducts = currentCategoryId ? products : products;
+                  // Filtrer les produits selon la catégorie et la recherche
+                  let filteredProducts = currentCategoryId ? products : products;
+                  filteredProducts = filterProductsBySearch(filteredProducts);
                   
                   // Pagination desktop
                   const indexOfLastProduct = currentDesktopPage * desktopProductsPerPage;
@@ -606,6 +626,15 @@ export default function HomePage() {
                       >
                         <div className="relative">
                           <div className="aspect-square bg-gray-100 flex items-center justify-center overflow-hidden">
+                            {/* Effet shimmer sur l'image */}
+                            <div className="absolute inset-0 pointer-events-none z-10">
+                              <div 
+                                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent"
+                                style={{
+                                  animation: 'shimmer 6s ease-in-out infinite',
+                                }}
+                              />
+                            </div>
                             {img ? (
                               <Image 
                                 src={img} 
@@ -621,23 +650,23 @@ export default function HomePage() {
                             )}
                           </div>
                           <button 
-                            className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm hover:shadow-md"
+                            className="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm hover:shadow-md"
                             onClick={(e) => {
                               e.stopPropagation();
                               toggleLike(product.name);
                             }}
                           >
                             {likedProducts[product.name] ? (
-                              <BsHeartFill size={16} className="text-red-500" />
+                              <BsHeartFill size={12} className="text-red-500" />
                             ) : (
-                              <BsHeart size={16} className="text-gray-600" />
+                              <BsHeart size={12} className="text-gray-600" />
                             )}
                           </button>
                         </div>
-                        <div className="p-4">
-                          <h3 className="font-medium text-gray-900 mb-1 line-clamp-2">{product.name}</h3>
+                        <div className="p-3">
+                          <h3 className="font-medium text-gray-900 mb-1 line-clamp-2 text-sm">{product.name}</h3>
                           <div className="flex items-center space-x-2 mb-2">
-                            <span className="text-lg font-bold text-gray-900">{price.toLocaleString('fr-FR')} FCFA</span>
+                            <span className="text-sm font-bold text-gray-900">{price.toLocaleString('fr-FR')} FCFA</span>
                           </div>
                           <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-1">
@@ -658,14 +687,15 @@ export default function HomePage() {
               
               {/* Desktop Pagination */}
               {(() => {
-                const filteredProducts = currentCategoryId ? products : products;
+                let filteredProducts = currentCategoryId ? products : products;
+                filteredProducts = filterProductsBySearch(filteredProducts);
                 const totalPages = Math.ceil(filteredProducts.length / desktopProductsPerPage);
                 
                 // Fonction pour changer de page desktop
                 const paginateDesktop = (pageNumber: number) => {
                   setCurrentDesktopPage(pageNumber);
                   // Remonter en haut de la section produits
-                  const productsSection = document.querySelector('.grid.grid-cols-4');
+                  const productsSection = document.querySelector('.grid.grid-cols-6');
                   if (productsSection) {
                     productsSection.scrollIntoView({ behavior: 'smooth' });
                   }
