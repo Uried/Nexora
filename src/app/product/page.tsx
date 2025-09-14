@@ -35,7 +35,6 @@ function ProductContent() {
   const [addMsg, setAddMsg] = useState<string | null>(null);
   const [showStockModal, setShowStockModal] = useState(false);
   const [showCartModal, setShowCartModal] = useState(false);
-  const [selectedSize, setSelectedSize] = useState('L');
 
   // Swipe support
   const touchStartX = useRef<number | null>(null);

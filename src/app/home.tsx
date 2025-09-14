@@ -7,9 +7,8 @@ import Profile_pic from '../../src/assets/images/profile-pic.jpg';
 // import Banner1 from '../../src/assets/images/banner1.png';
 // import Banner2 from '../../src/assets/images/banner2.png';
 import PerfumBanner from '../../src/assets/images/kasi_perfum.jpg';
-import Logo from '../../src/assets/images/logo.png';
 import Link from 'next/link';
-import { FiSearch, FiHeart, FiShoppingCart, FiUser } from 'react-icons/fi';
+import { FiSearch, FiShoppingCart, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import DesktopHeader from '../components/DesktopHeader';
 import { BsHeart, BsHeartFill } from 'react-icons/bs';
 import { useRouter } from "next/navigation";
@@ -544,9 +543,7 @@ export default function HomePage() {
                 }}
                 disabled={currentDesktopPage === 1}
               >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
+                <FiChevronLeft className="w-5 h-5" />
               </button>
               <button 
                 className="w-10 h-10 bg-black rounded-full flex items-center justify-center text-white hover:bg-gray-800 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
@@ -570,9 +567,7 @@ export default function HomePage() {
                   return currentDesktopPage >= totalPages;
                 })()}
               >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                </svg>
+                <FiChevronRight className="w-5 h-5" />
               </button>
             </div>
           </div>
@@ -585,7 +580,7 @@ export default function HomePage() {
                   <div className="p-4">
                     <div className="h-4 bg-gray-200 rounded mb-2"></div>
                     <div className="h-6 bg-gray-200 rounded mb-2 w-3/4"></div>
-                    <div className="flex space-x-2">
+                    <div className="flex items-center space-x-2">
                       <div className="h-4 bg-gray-200 rounded w-1/3"></div>
                       <div className="h-4 bg-gray-200 rounded w-1/4"></div>
                     </div>
@@ -639,7 +634,7 @@ export default function HomePage() {
                               />
                             ) : (
                               <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                                <span className="text-gray-400 text-sm">Pas d'image</span>
+                                <p className="text-gray-600 text-sm">Découvrez l&apos;essence de l&apos;élégance</p>
                               </div>
                             )}
                           </div>
