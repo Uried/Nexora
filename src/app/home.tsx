@@ -9,7 +9,8 @@ import Profile_pic from '../../src/assets/images/profile-pic.jpg';
 import PerfumBanner from '../../src/assets/images/kasi_perfum.jpg';
 import Logo from '../../src/assets/images/logo.png';
 import Link from 'next/link';
-import { FiSearch, FiShoppingCart } from 'react-icons/fi';
+import { FiSearch, FiHeart, FiShoppingCart, FiUser } from 'react-icons/fi';
+import DesktopHeader from '../components/DesktopHeader';
 import { BsHeart, BsHeartFill } from 'react-icons/bs';
 import { useRouter } from "next/navigation";
 
@@ -196,46 +197,10 @@ export default function HomePage() {
   return (
     <div className="bg-[#fbf0ef] min-h-screen">
       {/* Desktop Header - Hidden on mobile */}
-      <div className="hidden lg:block bg-white border-b">
-        <div className="container mx-auto px-6 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-8">
-              <div className="flex items-center cursor-pointer">
-                <Image 
-                  src={Logo} 
-                  alt="Nexora Logo" 
-                  width={120} 
-                  height={40} 
-                  className="h-16 w-auto"
-                />
-              </div>
-              <div className="flex items-center space-x-6">
-               
-                <div className="flex items-center bg-gray-50 border border-black rounded-lg px-4 py-2 w-96">
-                  <FiSearch className="text-gray-400 mr-2" size={18} />
-                  <input
-                    type="text"
-                    placeholder="Recherchez produits ou marques ici"
-                    className="bg-transparent border-none outline-none flex-grow text-sm"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <button className="text-sm text-gray-600 hover:text-black cursor-pointer">À propos de Kasi</button>
-              {/* <button className="text-sm text-gray-600 hover:text-black">Soins Nexora</button> */}
-              {/* <button className="text-sm text-gray-600 hover:text-black">Promo</button> */}
-              <button className="text-sm bg-black text-white px-4 py-2 rounded cursor-pointer">S'inscrire</button>
-              <button className="text-sm border border-gray-300 px-4 py-2 rounded cursor-pointer">Connexion</button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <DesktopHeader searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
       {/* Desktop Main Banner - Hidden on mobile */}
-      <div className="hidden lg:block relative h-96 overflow-hidden">
+      <div className="hidden lg:block relative h-96 overflow-hidden mt-20">
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image 
@@ -253,12 +218,6 @@ export default function HomePage() {
         {/* Content overlay */}
         <div className="relative z-10 container mx-auto px-6 py-16 h-full flex items-center">
           <div className="w-1/2">
-            <div className="text-sm text-blue-400 font-medium mb-2">#Big Fashion Sale</div>
-            <h1 className="text-5xl font-bold text-white mb-4">
-              Offre Limitée!<br />
-              Jusqu'à <span className="text-blue-400">50% OFF!</span>
-            </h1>
-            <p className="text-gray-200 text-lg mb-8">Redéfinissez votre style quotidien</p>
             <div className="flex space-x-2 mb-8">
               <div className="w-3 h-3 bg-white rounded-full"></div>
               <div className="w-3 h-3 bg-white/50 rounded-full"></div>
@@ -272,23 +231,25 @@ export default function HomePage() {
       <div className="hidden lg:block bg-white py-8">
         <div className="container mx-auto px-6">
           <div className="flex justify-center space-x-12">
-            {[
-              { name: 'Parfums', icon: '🌸' },
-              { name: 'Homme', icon: '👔' },
-              { name: 'Femme', icon: '👗' },
-              { name: 'Unisexe', icon: '👕' },
-              { name: 'Sacs', icon: '👜' },
-              { name: 'Montres', icon: '⌚' },
-              { name: 'Casquettes', icon: '🧢' },
-              { name: 'Toutes Catégories', icon: '📱' }
-            ].map((category, index) => (
-              <div key={index} className="flex flex-col items-center cursor-pointer group">
-                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center text-2xl mb-2 group-hover:bg-gray-200 transition-colors">
-                  {category.icon}
+            {['Toutes les collections', ...apiCategories.map(c => c.name)].map((categoryName, index) => {
+              const isSelected = selectedCategories.includes(categoryName);
+              return (
+                <div 
+                  key={index} 
+                  className="flex flex-col items-center cursor-pointer group"
+                  onClick={() => toggleCategory(categoryName)}
+                >
+                  <div className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl mb-2 transition-colors ${
+                    isSelected ? 'bg-black text-white' : 'bg-gray-100 group-hover:bg-gray-200'
+                  }`}>
+                    {categoryName === 'Toutes les collections' ? '📱' : '🏷️'}
+                  </div>
+                  <span className={`text-sm transition-colors ${
+                    isSelected ? 'text-black font-medium' : 'text-gray-700 group-hover:text-black'
+                  }`}>{categoryName}</span>
                 </div>
-                <span className="text-sm text-gray-700 group-hover:text-black">{category.name}</span>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
@@ -470,7 +431,7 @@ export default function HomePage() {
                       <div className="w-full h-full bg-gray-200" />
                     )}
                     <button
-                      className="absolute top-2 right-2 bg-white rounded-full p-1.5 shadow-sm"
+                      className="absolute top-2 right-2 bg-white rounded-full p-1.5 shadow-sm hover:shadow-md transition-shadow"
                       onClick={(e) => {
                         e.stopPropagation();
                         toggleLike(p.name);
@@ -488,7 +449,7 @@ export default function HomePage() {
                       <p className="text-gray-500 text-xs mb-2">{price.toLocaleString('fr-FR')} FCFA</p>
                     </div>
                     <button 
-                      className="bg-black text-white rounded-full p-2 shadow-sm"
+                      className="bg-black text-white rounded-full p-2 shadow-sm hover:bg-gray-800 transition-colors"
                       onClick={() => router.push(`/product?id=${p.id}`)}
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"><path d="M3.977 9.84A2 2 0 0 1 5.971 8h12.058a2 2 0 0 1 1.994 1.84l.803 10A2 2 0 0 1 18.833 22H5.167a2 2 0 0 1-1.993-2.16z" /><path d="M16 11V6a4 4 0 0 0-4-4v0a4 4 0 0 0-4 4v5" /></g></svg>
@@ -524,7 +485,7 @@ export default function HomePage() {
                   <button 
                     onClick={() => currentPage > 1 && paginate(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className={`px-3 py-1 rounded-full ${currentPage === 1 ? 'bg-gray-200 text-gray-500' : 'bg-white text-black'}`}
+                    className={`px-3 py-1 rounded-full transition-colors ${currentPage === 1 ? 'bg-gray-200 text-gray-500' : 'bg-white text-black hover:bg-gray-100'}`}
                   >
                     &lt;
                   </button>
@@ -534,7 +495,7 @@ export default function HomePage() {
                     <button
                       key={number}
                       onClick={() => paginate(number)}
-                      className={`w-8 h-8 rounded-full flex items-center justify-center ${currentPage === number ? 'bg-black text-white' : 'bg-white text-black'}`}
+                      className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${currentPage === number ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-100'}`}
                     >
                       {number}
                     </button>
@@ -543,7 +504,7 @@ export default function HomePage() {
                   <button 
                     onClick={() => currentPage < totalPages && paginate(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className={`px-3 py-1 rounded-full ${currentPage === totalPages ? 'bg-gray-200 text-gray-500' : 'bg-white text-black'}`}
+                    className={`px-3 py-1 rounded-full transition-colors ${currentPage === totalPages ? 'bg-gray-200 text-gray-500' : 'bg-white text-black hover:bg-gray-100'}`}
                   >
                     &gt;
                   </button>
@@ -570,12 +531,45 @@ export default function HomePage() {
              
             </div>
             <div className="flex space-x-2">
-              <button className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 cursor-pointer">
+              <button 
+                className="w-10 h-10 border-2 border-gray-300 rounded-full flex items-center justify-center hover:border-gray-400 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                onClick={() => {
+                  if (currentDesktopPage > 1) {
+                    setCurrentDesktopPage(currentDesktopPage - 1);
+                    const productsSection = document.querySelector('.grid.grid-cols-6');
+                    if (productsSection) {
+                      productsSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }
+                }}
+                disabled={currentDesktopPage === 1}
+              >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
               </button>
-              <button className="w-10 h-10 bg-black rounded-full flex items-center justify-center text-white hover:bg-gray-800 cursor-pointer">
+              <button 
+                className="w-10 h-10 bg-black rounded-full flex items-center justify-center text-white hover:bg-gray-800 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                onClick={() => {
+                  let filteredProducts = currentCategoryId ? products : products;
+                  filteredProducts = filterProductsBySearch(filteredProducts);
+                  const totalPages = Math.ceil(filteredProducts.length / desktopProductsPerPage);
+                  
+                  if (currentDesktopPage < totalPages) {
+                    setCurrentDesktopPage(currentDesktopPage + 1);
+                    const productsSection = document.querySelector('.grid.grid-cols-6');
+                    if (productsSection) {
+                      productsSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }
+                }}
+                disabled={(() => {
+                  let filteredProducts = currentCategoryId ? products : products;
+                  filteredProducts = filterProductsBySearch(filteredProducts);
+                  const totalPages = Math.ceil(filteredProducts.length / desktopProductsPerPage);
+                  return currentDesktopPage >= totalPages;
+                })()}
+              >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                 </svg>
@@ -650,7 +644,7 @@ export default function HomePage() {
                             )}
                           </div>
                           <button 
-                            className="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm hover:shadow-md"
+                            className="absolute top-2 right-2 w-6 h-6 cursor-pointer bg-white rounded-full flex items-center justify-center shadow-sm hover:shadow-md transition-shadow"
                             onClick={(e) => {
                               e.stopPropagation();
                               toggleLike(product.name);
@@ -709,7 +703,7 @@ export default function HomePage() {
                         <button 
                           onClick={() => currentDesktopPage > 1 && paginateDesktop(currentDesktopPage - 1)}
                           disabled={currentDesktopPage === 1}
-                          className={`px-4 py-2 rounded-lg ${currentDesktopPage === 1 ? 'bg-gray-200 text-gray-500' : 'bg-white text-black hover:bg-gray-50'}`}
+                          className={`px-4 py-2 rounded-full transition-colors ${currentDesktopPage === 1 ? 'bg-gray-200 text-gray-500' : 'bg-white text-black hover:bg-gray-100'}`}
                         >
                           Précédent
                         </button>
@@ -719,7 +713,7 @@ export default function HomePage() {
                           <button
                             key={number}
                             onClick={() => paginateDesktop(number)}
-                            className={`w-10 h-10 rounded-lg flex items-center justify-center ${currentDesktopPage === number ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-50'}`}
+                            className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${currentDesktopPage === number ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-100'}`}
                           >
                             {number}
                           </button>
@@ -728,7 +722,7 @@ export default function HomePage() {
                         <button 
                           onClick={() => currentDesktopPage < totalPages && paginateDesktop(currentDesktopPage + 1)}
                           disabled={currentDesktopPage === totalPages}
-                          className={`px-4 py-2 rounded-lg ${currentDesktopPage === totalPages ? 'bg-gray-200 text-gray-500' : 'bg-white text-black hover:bg-gray-50'}`}
+                          className={`px-4 py-2 rounded-full transition-colors ${currentDesktopPage === totalPages ? 'bg-gray-200 text-gray-500' : 'bg-white text-black hover:bg-gray-100'}`}
                         >
                           Suivant
                         </button>

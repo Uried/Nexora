@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { FiMinus, FiPlus, FiArrowLeft, FiShoppingCart, FiAlertTriangle } from 'react-icons/fi';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Header from '../../components/Header';
+import DesktopHeader from '../../components/DesktopHeader';
 import { addToCart } from '../../lib/cart';
 
 function ProductContent() {
@@ -33,6 +34,8 @@ function ProductContent() {
   const [adding, setAdding] = useState(false);
   const [addMsg, setAddMsg] = useState<string | null>(null);
   const [showStockModal, setShowStockModal] = useState(false);
+  const [showCartModal, setShowCartModal] = useState(false);
+  const [selectedSize, setSelectedSize] = useState('L');
 
   // Swipe support
   const touchStartX = useRef<number | null>(null);
@@ -106,7 +109,9 @@ function ProductContent() {
   return (
     <>
       <Header defaultLanguage="FR" />
-      <div className="pt-16 bg-[#fbf0ef] h-screen overflow-hidden flex flex-col">
+      <DesktopHeader />
+      {/* Mobile Layout */}
+      <div className="lg:hidden pt-16 bg-[#fbf0ef] h-screen overflow-hidden flex flex-col">
         {/* Product Image / Slider */}
         <div className="relative w-full aspect-square mb-0" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
           <div className="absolute top-4 left-4 right-4 z-10 flex justify-between">
@@ -290,6 +295,173 @@ function ProductContent() {
         </div>
       </div>
 
+      {/* Desktop Layout */}
+      <div className="hidden lg:block pt-36 bg-white min-h-screen">
+        <div className="container mx-auto px-6 py-8">
+          <div className="grid grid-cols-2 gap-12">
+            {/* Left: Image Gallery */}
+            <div className="space-y-4">
+              {/* Main Image */}
+              <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                {loading ? (
+                  <div className="w-full h-full flex items-center justify-center text-gray-600">Chargement...</div>
+                ) : error ? (
+                  <div className="w-full h-full flex items-center justify-center text-red-600">{error}</div>
+                ) : images.length > 0 ? (
+                  <Image
+                    src={images[currentIndex]}
+                    alt={product?.name || 'Produit'}
+                    width={600}
+                    height={600}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-gray-400">Aucune image</div>
+                )}
+              </div>
+              
+              {/* Thumbnail Gallery */}
+              {images.length > 1 && (
+                <div className="flex gap-2 overflow-x-auto">
+                  {images.map((img, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentIndex(index)}
+                      className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 ${
+                        index === currentIndex ? 'border-black' : 'border-gray-200'
+                      }`}
+                    >
+                      <Image
+                        src={img}
+                        alt={`${product?.name} ${index + 1}`}
+                        width={80}
+                        height={80}
+                        className="w-full h-full object-cover"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Right: Product Details */}
+            <div className="space-y-6">
+              {/* Breadcrumb */}
+              <div className="text-sm text-gray-500">
+                {product?.categories?.[0]?.name || 'Men'} / {product?.details?.brand || 'Shirt'}
+              </div>
+
+              {/* Product Title */}
+              <h1 className="text-4xl font-bold text-gray-900">
+                {product?.name || 'Thick Embroidered Short Sleeve Shirt'}
+              </h1>
+
+              {/* Price */}
+              <div className="flex items-baseline gap-3">
+                <span className="text-3xl font-bold text-red-500">
+                  {((product?.discountPrice && product.discountPrice > 0) ? product.discountPrice : product?.price || 98).toLocaleString('fr-FR')} FCFA
+                </span>
+                {hasDiscount && (
+                  <span className="text-xl text-gray-400 line-through">
+                    {product?.price.toLocaleString('fr-FR')} FCFA
+                  </span>
+                )}
+              </div>
+
+              {/* Quantity */}
+              <div className="space-y-3">
+                <h3 className="text-lg font-medium text-gray-900">Quantity:</h3>
+                <div className="flex items-center justify-center cursor-pointer px-4 py-2 border-2 border-black text-black rounded-full w-fit">
+                  <button className="px-3 text-black cursor-pointer" onClick={decreaseQuantity}>
+                    <FiMinus />
+                  </button>
+                  <span className="px-3 text-black min-w-[2rem] text-center cursor-pointer">{quantity}</span>
+                  <button className="px-3 text-black cursor-pointer" onClick={increaseQuantity}>
+                    <FiPlus />
+                  </button>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div className="space-y-3">
+                <h3 className="text-lg font-medium text-gray-900">Descriptions:</h3>
+                <div className="text-gray-700 leading-relaxed">
+                  <p className="mb-4">
+                    {product?.description || "Blending 2 of our most iconic looks, this full-zip hoodie draws design inspiration from our timeless Windrunner jacket, as well as our Tech Fleece jacket. It's designed to feel relaxed through the shoulders, chest and body for an athletic fit you can layer. Our premium, smooth on-both-sides fleece feels warmer and softer than ever while keeping the same lightweight build you love."}
+                  </p>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-3 pt-6">
+                <button
+                  disabled={!product || adding}
+                  onClick={async () => {
+                    if (!product) return;
+                    
+                    if (product.stock !== undefined && product.stock < quantity) {
+                      setShowStockModal(true);
+                      return;
+                    }
+                    
+                    setAdding(true);
+                    setAddMsg(null);
+                    const priceNow = (product.discountPrice && product.discountPrice > 0) ? product.discountPrice : product.price;
+                    const res = await addToCart(product.id, quantity, priceNow);
+                    setAdding(false);
+                    if (res.ok) {
+                      setShowCartModal(true);
+                    } else {
+                      setAddMsg(res.message || 'Erreur');
+                      setTimeout(() => setAddMsg(null), 2000);
+                    }
+                  }}
+                  className={`w-full rounded-full px-4 py-3 cursor-pointer flex items-center justify-center gap-1 text-sm ${
+                    adding ? 'bg-gray-400 text-white' : 'bg-black text-white'
+                  }`}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" className="flex-shrink-0"><g fill="none" stroke="#fff" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"><circle cx="9.549" cy="19.049" r="1.701"/><circle cx="16.96" cy="19.049" r="1.701"/><path d="m5.606 5.555l2.01 6.364c.309.978.463 1.467.76 1.829c.26.32.599.567.982.72c.435.173.947.173 1.973.173h3.855c1.026 0 1.538 0 1.972-.173c.384-.153.722-.4.983-.72c.296-.362.45-.851.76-1.829l.409-1.296l.24-.766l.331-1.05a2.5 2.5 0 0 0-2.384-3.252zm0 0l-.011-.037a7 7 0 0 0-.14-.42a2.92 2.92 0  0 0-2.512-1.84C2.84 3.25 2.727 3.25 2.5 3.25"/></g></svg>
+                  <span className="whitespace-nowrap cursor-pointer">{adding ? 'Ajout...' : 'Ajouter au panier'}</span>
+                </button>
+                
+                <button
+                  onClick={() => router.push('/cart')}
+                  className="w-full py-3 px-4 border-2 cursor-pointer border-black text-black rounded-full flex items-center justify-center gap-2 hover:bg-black hover:text-white transition-colors duration-200"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" className="flex-shrink-0">
+                    <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
+                      <circle cx="9.549" cy="19.049" r="1.701"/>
+                      <circle cx="16.96" cy="19.049" r="1.701"/>
+                      <path d="m5.606 5.555l2.01 6.364c.309.978.463 1.467.76 1.829c.26.32.599.567.982.72c.435.173.947.173 1.973.173h3.855c1.026 0 1.538 0 1.972-.173c.384-.153.722-.4.983-.72c.296-.362.45-.851.76-1.829l.409-1.296l.24-.766l.331-1.05a2.5 2.5 0 0 0-2.384-3.252zm0 0l-.011-.037a7 7 0 0 0-.14-.42a2.92 2.92 0  0 0-2.512-1.84C2.84 3.25 2.727 3.25 2.5 3.25"/>
+                    </g>
+                  </svg>
+                  <span>Voir le panier</span>
+                </button>
+                
+                <button
+                  onClick={() => router.push('/')}
+                  className="w-full py-3 px-4 border-2 cursor-pointer border-black text-black rounded-full flex items-center justify-center gap-2 hover:bg-black hover:text-white transition-colors duration-200"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" className="flex-shrink-0">
+                    <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
+                      <path d="M19 12H5m7-7l-7 7l7 7"/>
+                    </g>
+                  </svg>
+                  <span>Continuer mes achats</span>
+                </button>
+
+              </div>
+
+
+
+              {addMsg && (
+                <div className="mt-4 text-center text-sm text-gray-700">{addMsg}</div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Modal de stock insuffisant */}
       {showStockModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -325,6 +497,47 @@ function ProductContent() {
               >
                 Ajuster ({product?.stock || 0})
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de confirmation d'ajout au panier */}
+      {showCartModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm text-black">
+            <div className="text-center">
+              <div className="bg-green-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" className="text-green-500">
+                  <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
+                    <path d="M9 12l2 2l4-4"/>
+                    <circle cx="12" cy="12" r="9"/>
+                  </g>
+                </svg>
+              </div>
+              <h3 className="font-semibold text-lg text-black mb-2">Produit ajouté !</h3>
+              <p className="text-gray-600 mb-6">
+                {product?.name} a été ajouté à votre panier avec succès.
+              </p>
+              
+              <div className="space-y-3">
+                <button 
+                  onClick={() => {
+                    setShowCartModal(false);
+                    router.push('/cart');
+                  }}
+                  className="w-full bg-black text-white py-3 px-4 rounded-full font-medium hover:bg-gray-800 transition-colors cursor-pointer"
+                >
+                  Voir le panier
+                </button>
+                
+                <button 
+                  onClick={() => { setShowCartModal(false); router.push('/'); }}
+                  className="w-full py-3 px-4 border-2 border-black text-black rounded-full font-medium hover:bg-black hover:text-white transition-colors cursor-pointer"
+                >
+                  Continuer mes achats
+                </button>
+              </div>
             </div>
           </div>
         </div>
