@@ -446,7 +446,7 @@ export default function CheckoutPage() {
                                     <FiAlertTriangle className="text-yellow-500 mt-1 mr-3 flex-shrink-0" size={20} />
                                     <div>
                                         <p className="text-sm text-gray-700">
-                                            <strong>Note:</strong> Le paiement en ligne n'est pas encore disponible. Après avoir validé votre commande, 
+                                            <strong>Note:</strong> Le paiement en ligne n&apos;est pas encore disponible. Après avoir validé votre commande, 
                                             vous serez redirigé vers WhatsApp pour finaliser votre commande avec notre équipe.
                                         </p>
                                     </div>
@@ -539,7 +539,7 @@ export default function CheckoutPage() {
                                             <div key={item._id} className="flex items-center gap-3 bg-white p-3 rounded-lg">
                                                 <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
                                                     {item.productId?.images?.[0] ? (
-                                                        <img
+                                                        <Image
                                                             src={item.productId.images[0]}
                                                             alt={item.productId?.name || 'Produit'}
                                                             className="w-full h-full object-cover"

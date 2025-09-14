@@ -338,7 +338,7 @@ export default function CartPage() {
                                     <div className="text-center">
                                         <div className="text-6xl mb-4">🛒</div>
                                         <h2 className="text-2xl font-semibold text-gray-900 mb-2">Votre panier est vide</h2>
-                                        <p className="text-gray-500 mb-6">Vous n'avez pas encore ajouté d'articles à votre panier.</p>
+                                        <p className="text-gray-500 mb-6">Vous n&apos;avez pas encore ajouté d&apos;articles à votre panier.</p>
                                         <Link href="/">
                                             <button className="bg-black text-white py-3 px-6 rounded-full font-medium hover:bg-gray-800 transition-colors">
                                                 Découvrir nos produits
@@ -442,7 +442,7 @@ export default function CartPage() {
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
                     <div className="bg-white rounded-2xl p-5 w-full max-w-sm text-black">
                         <div className="flex justify-between items-center mb-4">
-                            <h3 className="font-semibold text-lg cursor-pointer text-black">Vider le panier</h3>
+                            <h3 className="font-semibold text-lg text-black">Vider le panier</h3>
                             <button onClick={() => setShowClearCartConfirm(false)} className="p-1">
                                 <FiX size={20} />
                             </button>
