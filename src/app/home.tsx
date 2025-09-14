@@ -7,6 +7,7 @@ import Profile_pic from '../../src/assets/images/profile-pic.jpg';
 // import Banner1 from '../../src/assets/images/banner1.png';
 // import Banner2 from '../../src/assets/images/banner2.png';
 import PerfumBanner from '../../src/assets/images/kasi_perfum.jpg';
+import Logo from '../../src/assets/images/logo.png';
 import Link from 'next/link';
 import { FiSearch, FiShoppingCart } from 'react-icons/fi';
 import { BsHeart, BsHeartFill } from 'react-icons/bs';
@@ -36,6 +37,9 @@ export default function HomePage() {
   // États pour la pagination
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [productsPerPage] = useState<number>(6);
+  // États pour la pagination desktop
+  const [currentDesktopPage, setCurrentDesktopPage] = useState<number>(1);
+  const [desktopProductsPerPage] = useState<number>(8);
 
   // État pour gérer les produits aimés
   const [likedProducts, setLikedProducts] = useState<{ [key: string]: boolean }>({ 'Black Opium': true });
@@ -129,6 +133,7 @@ export default function HomePage() {
   // Réinitialiser la pagination quand les filtres changent
   useEffect(() => {
     setCurrentPage(1);
+    setCurrentDesktopPage(1);
   }, [selectedCategories, currentCategoryId]);
 
   // Fonction pour gérer les likes des produits
@@ -176,7 +181,105 @@ export default function HomePage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-6 bg-[#fbf0ef] min-h-screen">
+    <div className="bg-[#fbf0ef] min-h-screen">
+      {/* Desktop Header - Hidden on mobile */}
+      <div className="hidden lg:block bg-white border-b">
+        <div className="container mx-auto px-6 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-8">
+              <div className="flex items-center">
+                <Image 
+                  src={Logo} 
+                  alt="Nexora Logo" 
+                  width={120} 
+                  height={40} 
+                  className="h-16 w-auto"
+                />
+              </div>
+              <div className="flex items-center space-x-6">
+               
+                <div className="flex items-center bg-gray-50 border border-black rounded-lg px-4 py-2 w-96">
+                  <FiSearch className="text-gray-400 mr-2" size={18} />
+                  <input
+                    type="text"
+                    placeholder="Recherchez produits ou marques ici"
+                    className="bg-transparent border-none outline-none flex-grow text-sm"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <button className="text-sm text-gray-600 hover:text-black">À propos de Kasi</button>
+              {/* <button className="text-sm text-gray-600 hover:text-black">Soins Nexora</button> */}
+              {/* <button className="text-sm text-gray-600 hover:text-black">Promo</button> */}
+              <button className="text-sm bg-black text-white px-4 py-2 rounded">S'inscrire</button>
+              <button className="text-sm border border-gray-300 px-4 py-2 rounded">Connexion</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop Main Banner - Hidden on mobile */}
+      <div className="hidden lg:block relative h-96 overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <Image 
+            src={PerfumBanner} 
+            alt="Perfume Collection" 
+            className="w-full h-full object-cover" 
+            width={1200}
+            height={400}
+            priority
+          />
+          {/* Overlay gradient for better text readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/20"></div>
+        </div>
+        
+        {/* Content overlay */}
+        <div className="relative z-10 container mx-auto px-6 py-16 h-full flex items-center">
+          <div className="w-1/2">
+            <div className="text-sm text-blue-400 font-medium mb-2">#Big Fashion Sale</div>
+            <h1 className="text-5xl font-bold text-white mb-4">
+              Offre Limitée!<br />
+              Jusqu'à <span className="text-blue-400">50% OFF!</span>
+            </h1>
+            <p className="text-gray-200 text-lg mb-8">Redéfinissez votre style quotidien</p>
+            <div className="flex space-x-2 mb-8">
+              <div className="w-3 h-3 bg-white rounded-full"></div>
+              <div className="w-3 h-3 bg-white/50 rounded-full"></div>
+              <div className="w-3 h-3 bg-white/50 rounded-full"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop Category Icons - Hidden on mobile */}
+      <div className="hidden lg:block bg-white py-8">
+        <div className="container mx-auto px-6">
+          <div className="flex justify-center space-x-12">
+            {[
+              { name: 'Parfums', icon: '🌸' },
+              { name: 'Homme', icon: '👔' },
+              { name: 'Femme', icon: '👗' },
+              { name: 'Unisexe', icon: '👕' },
+              { name: 'Sacs', icon: '👜' },
+              { name: 'Montres', icon: '⌚' },
+              { name: 'Casquettes', icon: '🧢' },
+              { name: 'Toutes Catégories', icon: '📱' }
+            ].map((category, index) => (
+              <div key={index} className="flex flex-col items-center cursor-pointer group">
+                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center text-2xl mb-2 group-hover:bg-gray-200 transition-colors">
+                  {category.icon}
+                </div>
+                <span className="text-sm text-gray-700 group-hover:text-black">{category.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Layout - Hidden on desktop */}
+      <div className="lg:hidden container mx-auto px-4 py-6">
       {/* Welcome section */}
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push('/account')}>
@@ -310,7 +413,7 @@ export default function HomePage() {
         )}
 
         {/* Product Grid */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {(() => {
             // Filtrer les produits selon la catégorie
             const filteredProducts = currentCategoryId ? products : products;
@@ -431,6 +534,195 @@ export default function HomePage() {
           }
           return null;
         })()}
+      </div>
+      </div>
+
+      {/* Desktop Trending Products Section - Hidden on mobile */}
+      <div className="hidden lg:block bg-white py-12">
+        <div className="container mx-auto px-6">
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center">
+                <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900">Produits tendance</h2>
+             
+            </div>
+            <div className="flex space-x-2">
+              <button className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+              </button>
+              <button className="w-10 h-10 bg-black rounded-full flex items-center justify-center text-white hover:bg-gray-800">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          {loadingProducts && (
+            <div className="grid grid-cols-4 gap-6">
+              {[...Array(8)].map((_, index) => (
+                <div key={index} className="bg-white border rounded-lg overflow-hidden animate-pulse">
+                  <div className="aspect-square bg-gray-200"></div>
+                  <div className="p-4">
+                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-6 bg-gray-200 rounded mb-2 w-3/4"></div>
+                    <div className="flex space-x-2">
+                      <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+                      <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          
+          {!loadingProducts && !errorProducts && products.length > 0 && (
+            <>
+              <div className="grid grid-cols-4 gap-6">
+                {(() => {
+                  // Filtrer les produits selon la catégorie
+                  const filteredProducts = currentCategoryId ? products : products;
+                  
+                  // Pagination desktop
+                  const indexOfLastProduct = currentDesktopPage * desktopProductsPerPage;
+                  const indexOfFirstProduct = indexOfLastProduct - desktopProductsPerPage;
+                  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+                  
+                  return currentProducts.map((product) => {
+                    const img = (product.images && product.images.length > 0) ? product.images[0] : null;
+                    const price = product.discountPrice && product.discountPrice > 0 ? product.discountPrice : product.price;
+                    
+                    return (
+                      <div 
+                        key={product.id} 
+                        className="bg-white border rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group"
+                        onClick={() => router.push(`/product?id=${product.id}`)}
+                      >
+                        <div className="relative">
+                          <div className="aspect-square bg-gray-100 flex items-center justify-center overflow-hidden">
+                            {img ? (
+                              <Image 
+                                src={img} 
+                                alt={product.name} 
+                                className="object-cover w-full h-full group-hover:scale-105 transition-transform" 
+                                width={200} 
+                                height={200} 
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                                <span className="text-gray-400 text-sm">Pas d'image</span>
+                              </div>
+                            )}
+                          </div>
+                          <button 
+                            className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm hover:shadow-md"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleLike(product.name);
+                            }}
+                          >
+                            {likedProducts[product.name] ? (
+                              <BsHeartFill size={16} className="text-red-500" />
+                            ) : (
+                              <BsHeart size={16} className="text-gray-600" />
+                            )}
+                          </button>
+                        </div>
+                        <div className="p-4">
+                          <h3 className="font-medium text-gray-900 mb-1 line-clamp-2">{product.name}</h3>
+                          <div className="flex items-center space-x-2 mb-2">
+                            <span className="text-lg font-bold text-gray-900">{price.toLocaleString('fr-FR')} FCFA</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-1">
+                              {[...Array(5)].map((_, i) => (
+                                <svg key={i} className={`w-4 h-4 ${i < 4 ? 'text-yellow-400' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 20 20">
+                                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                              ))}
+                              <span className="text-xs text-gray-500 ml-1">Tendance</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  });
+                })()}
+              </div>
+              
+              {/* Desktop Pagination */}
+              {(() => {
+                const filteredProducts = currentCategoryId ? products : products;
+                const totalPages = Math.ceil(filteredProducts.length / desktopProductsPerPage);
+                
+                // Fonction pour changer de page desktop
+                const paginateDesktop = (pageNumber: number) => {
+                  setCurrentDesktopPage(pageNumber);
+                  // Remonter en haut de la section produits
+                  const productsSection = document.querySelector('.grid.grid-cols-4');
+                  if (productsSection) {
+                    productsSection.scrollIntoView({ behavior: 'smooth' });
+                  }
+                };
+                
+                // Afficher la pagination seulement s'il y a plus d'une page
+                if (filteredProducts.length > 0 && totalPages > 1) {
+                  return (
+                    <div className="mt-8 flex justify-center">
+                      <div className="flex items-center space-x-2">
+                        <button 
+                          onClick={() => currentDesktopPage > 1 && paginateDesktop(currentDesktopPage - 1)}
+                          disabled={currentDesktopPage === 1}
+                          className={`px-4 py-2 rounded-lg ${currentDesktopPage === 1 ? 'bg-gray-200 text-gray-500' : 'bg-white text-black hover:bg-gray-50'}`}
+                        >
+                          Précédent
+                        </button>
+                        
+                        {/* Afficher les numéros de page */}
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
+                          <button
+                            key={number}
+                            onClick={() => paginateDesktop(number)}
+                            className={`w-10 h-10 rounded-lg flex items-center justify-center ${currentDesktopPage === number ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-50'}`}
+                          >
+                            {number}
+                          </button>
+                        ))}
+                        
+                        <button 
+                          onClick={() => currentDesktopPage < totalPages && paginateDesktop(currentDesktopPage + 1)}
+                          disabled={currentDesktopPage === totalPages}
+                          className={`px-4 py-2 rounded-lg ${currentDesktopPage === totalPages ? 'bg-gray-200 text-gray-500' : 'bg-white text-black hover:bg-gray-50'}`}
+                        >
+                          Suivant
+                        </button>
+                      </div>
+                    </div>
+                  );
+                }
+                return null;
+              })()}
+            </>
+          )}
+          
+          {errorProducts && (
+            <div className="text-center py-8">
+              <p className="text-red-600">{errorProducts}</p>
+            </div>
+          )}
+          
+          {!loadingProducts && !errorProducts && products.length === 0 && (
+            <div className="text-center py-8">
+              <p className="text-gray-600">Aucun produit disponible pour le moment.</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

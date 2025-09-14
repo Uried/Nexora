@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <>
       <Header defaultLanguage="FR" />
-      <div className="pt-16">
+      <div className="lg:pt-0 pt-16">
         <HomePage />
       </div>
     </>
