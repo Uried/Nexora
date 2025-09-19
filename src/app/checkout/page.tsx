@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { FiArrowLeft, FiAlertTriangle } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import Header from '../../components/Header';
 import DesktopHeader from '../../components/DesktopHeader';
 import { getCartFull, clearCart, type ServerCartItem, type ServerCartResponse } from '../../lib/cart';
@@ -539,10 +540,12 @@ export default function CheckoutPage() {
                                             <div key={item._id} className="flex items-center gap-3 bg-white p-3 rounded-lg">
                                                 <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
                                                     {item.productId?.images?.[0] ? (
-                                                        <img
+                                                        <Image
                                                             src={item.productId.images[0]}
                                                             alt={item.productId?.name || 'Produit'}
-                                                            className="w-full h-full object-cover"
+                                                            width={48}
+                                                            height={48}
+                                                            className="object-cover"
                                                         />
                                                     ) : (
                                                         <div className="w-full h-full bg-gray-100" />

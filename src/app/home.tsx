@@ -8,7 +8,7 @@ import Profile_pic from '../../src/assets/images/profile-pic.jpg';
 // import Banner2 from '../../src/assets/images/banner2.png';
 import PerfumBanner from '../../src/assets/images/kasi_perfum.jpg';
 import Link from 'next/link';
-import { FiSearch, FiShoppingCart, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { FiSearch, FiShoppingCart } from 'react-icons/fi';
 import DesktopHeader from '../components/DesktopHeader';
 import { BsHeart, BsHeartFill } from 'react-icons/bs';
 import { useRouter } from "next/navigation";
@@ -403,7 +403,6 @@ export default function HomePage() {
             
             return currentProducts.map((p) => {
               const img = (p.images && p.images.length > 0) ? p.images[0] : null;
-              const price = p.discountPrice && p.discountPrice > 0 ? p.discountPrice : p.price;
               return (
                 <div 
                   key={p.id}
@@ -445,7 +444,7 @@ export default function HomePage() {
                   <div className="flex items-center justify-between">
                     <div className='font-semibold'>
                       <h4 className="text-sm line-clamp-1 text-black">{p.name}</h4>
-                      <p className="text-gray-500 text-xs mb-2">{price.toLocaleString('fr-FR')} FCFA</p>
+                      <p className="text-gray-600 text-sm">Découvrez l&apos;élégance à travers nos parfums d&apos;exception</p>
                     </div>
                     <button 
                       className="bg-black text-white rounded-full p-2 shadow-sm hover:bg-gray-800 transition-colors"
@@ -543,7 +542,9 @@ export default function HomePage() {
                 }}
                 disabled={currentDesktopPage === 1}
               >
-                <FiChevronLeft className="w-5 h-5" />
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
               </button>
               <button 
                 className="w-10 h-10 bg-black rounded-full flex items-center justify-center text-white hover:bg-gray-800 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
@@ -567,7 +568,9 @@ export default function HomePage() {
                   return currentDesktopPage >= totalPages;
                 })()}
               >
-                <FiChevronRight className="w-5 h-5" />
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                </svg>
               </button>
             </div>
           </div>
@@ -580,7 +583,7 @@ export default function HomePage() {
                   <div className="p-4">
                     <div className="h-4 bg-gray-200 rounded mb-2"></div>
                     <div className="h-6 bg-gray-200 rounded mb-2 w-3/4"></div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex space-x-2">
                       <div className="h-4 bg-gray-200 rounded w-1/3"></div>
                       <div className="h-4 bg-gray-200 rounded w-1/4"></div>
                     </div>
@@ -605,7 +608,7 @@ export default function HomePage() {
                   
                   return currentProducts.map((product) => {
                     const img = (product.images && product.images.length > 0) ? product.images[0] : null;
-                    const price = product.discountPrice && product.discountPrice > 0 ? product.discountPrice : product.price;
+                    const displayPrice = product.discountPrice && product.discountPrice > 0 ? product.discountPrice : product.price;
                     
                     return (
                       <div 
@@ -634,7 +637,7 @@ export default function HomePage() {
                               />
                             ) : (
                               <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                                <p className="text-gray-600 text-sm">Découvrez l&apos;essence de l&apos;élégance</p>
+                                <span className="text-gray-400 text-sm">Pas d&apos;image</span>
                               </div>
                             )}
                           </div>
@@ -655,7 +658,7 @@ export default function HomePage() {
                         <div className="p-3">
                           <h3 className="font-medium text-gray-900 mb-1 line-clamp-2 text-sm">{product.name}</h3>
                           <div className="flex items-center space-x-2 mb-2">
-                            <span className="text-sm font-bold text-gray-900">{price.toLocaleString('fr-FR')} FCFA</span>
+                            <span className="text-sm font-bold text-gray-900">{displayPrice.toLocaleString('fr-FR')} FCFA</span>
                           </div>
                           <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-1">

@@ -42,7 +42,7 @@ export default function DesktopHeader({ searchQuery = '', setSearchQuery }: Desk
           <div className="flex items-center space-x-4">
             <button className="text-sm text-gray-600 hover:text-black cursor-pointer">À propos de Kasi</button>
             <button className="text-sm bg-black text-white px-4 py-2 rounded-full cursor-pointer hover:bg-gray-800">S&apos;inscrire</button>
-            <button className="px-4 py-2 border border-black text-black rounded-full hover:bg-black hover:text-white transition-colors">À propos de Kasi</button>
+            <button className="text-sm border-2 border-black text-black px-4 py-2 rounded-full cursor-pointer hover:bg-black hover:text-white transition-colors">Connexion</button>
           </div>
         </div>
       </div>
