@@ -22,7 +22,7 @@ function ProductContent() {
     discountPrice?: number;
     stock?: number;
     images?: string[];
-    details?: { brand?: string };
+    details?: { brand?: string; size?: string };
     categories?: Category[];
   }
 
@@ -194,6 +194,9 @@ function ProductContent() {
           <div className="mb-4">
             <h1 className="text-2xl font-bold text-black">{product?.name || '—'}</h1>
             <p className="text-sm text-gray-600 mb-1">{product?.details?.brand || product?.categories?.[0]?.name || ''}</p>
+            {product?.details?.size && (
+              <p className="text-sm text-gray-500">Taille: {product.details.size}</p>
+            )}
             {product && (
               <div className="flex items-baseline gap-3">
                 <p className="text-2xl font-bold text-black">
@@ -348,12 +351,20 @@ function ProductContent() {
               {/* Breadcrumb */}
               <div className="text-sm text-gray-500">
                 {product?.categories?.[0]?.name || 'Men'} / {product?.details?.brand || 'Shirt'}
+                {product?.details?.size && ` / ${product.details.size}`}
               </div>
 
               {/* Product Title */}
               <h1 className="text-4xl font-bold text-gray-900">
                 {product?.name || 'Thick Embroidered Short Sleeve Shirt'}
               </h1>
+              
+              {/* Size Info */}
+              {product?.details?.size && (
+                <div className="text-lg text-gray-600">
+                  Taille: {product.details.size}
+                </div>
+              )}
 
               {/* Price */}
               <div className="flex items-baseline gap-3">

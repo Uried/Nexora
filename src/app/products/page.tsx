@@ -146,7 +146,7 @@ export default function ProductsPage() {
 
   return (
     <>
-      <Header defaultLanguage="FR" />
+      {/* <Header defaultLanguage="FR" /> */}
       <div className="pt-16 bg-[#fbf0ef] min-h-screen px-4 pb-20">
         {/* En-tête de la page */}
         <div className="py-6">
