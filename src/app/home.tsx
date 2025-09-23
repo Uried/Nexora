@@ -444,7 +444,16 @@ export default function HomePage() {
                   <div className="flex items-center justify-between">
                     <div className='font-semibold'>
                       <h4 className="text-sm line-clamp-1 text-black">{p.name}</h4>
-                      <p className="text-gray-600 text-sm">Découvrez l&apos;élégance à travers nos parfums d&apos;exception</p>
+                      <p className="text-gray-600 text-sm">
+                        {p.discountPrice && p.discountPrice > 0 ? (
+                          <>
+                            <span className="line-through mr-2">{p.price.toLocaleString()} FCFA</span>
+                            <span className="text-red-600 font-bold">{p.discountPrice.toLocaleString()} FCFA</span>
+                          </>
+                        ) : (
+                          <span>{p.price.toLocaleString()} FCFA</span>
+                        )}
+                      </p>
                     </div>
                     <button 
                       className="bg-black text-white rounded-full p-2 shadow-sm hover:bg-gray-800 transition-colors"
