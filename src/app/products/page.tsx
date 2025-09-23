@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { FiSearch } from 'react-icons/fi';
 import { BsHeart, BsHeartFill } from 'react-icons/bs';
 import { useRouter } from 'next/navigation';
-import Header from '../../components/Header';
 
 export default function ProductsPage() {
   const router = useRouter();
