@@ -195,7 +195,7 @@ function ProductContent() {
             <h1 className="text-2xl font-bold text-black">{product?.name || '—'}</h1>
             <p className="text-sm text-gray-600 mb-1">{product?.details?.brand || product?.categories?.[0]?.name || ''}</p>
             {product?.details?.size && (
-              <p className="text-sm text-gray-500 font-bold">{product.details.size}</p>
+              <p className="text-base text-black font-bold">{product.details.size}</p>
             )}
             {product && (
               <div className="flex items-baseline gap-3">
@@ -361,7 +361,7 @@ function ProductContent() {
               
               {/* Size Info */}
               {product?.details?.size && (
-                <div className="text-lg text-gray-600">
+                <div className="text-lg text-black">
                   {product.details.size}
                 </div>
               )}
