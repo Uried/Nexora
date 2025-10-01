@@ -6,7 +6,8 @@ import Image from 'next/image';
 import Profile_pic from '../../src/assets/images/profile-pic.jpg';
 // import Banner1 from '../../src/assets/images/banner1.png';
 // import Banner2 from '../../src/assets/images/banner2.png';
-import PerfumBanner from '../../src/assets/images/kasi_perfum.jpg';
+import PerfumBanner from '../../src/assets/images/bann_desktop1.png';
+import MobileBanner from '../../src/assets/images/bann_phone.png';
 import Link from 'next/link';
 import { FiSearch, FiShoppingCart } from 'react-icons/fi';
 import DesktopHeader from '../components/DesktopHeader';
@@ -199,15 +200,14 @@ export default function HomePage() {
       <DesktopHeader searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
       {/* Desktop Main Banner - Hidden on mobile */}
-      <div className="hidden lg:block relative h-96 overflow-hidden mt-20">
+      <div className="hidden lg:block relative h-60 overflow-hidden mt-20">
         {/* Background Image */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 h-full w-full">
           <Image 
             src={PerfumBanner} 
             alt="Perfume Collection" 
-            className="w-full h-full object-cover" 
-            width={1200}
-            height={400}
+            className="w-full h-full" 
+         
             priority
           />
           {/* Overlay gradient for better text readability */}
@@ -216,13 +216,13 @@ export default function HomePage() {
         
         {/* Content overlay */}
         <div className="relative z-10 container mx-auto px-6 py-16 h-full flex items-center">
-          <div className="w-1/2">
+          {/* <div className="w-1/2">
             <div className="flex space-x-2 mb-8">
               <div className="w-3 h-3 bg-white rounded-full"></div>
               <div className="w-3 h-3 bg-white/50 rounded-full"></div>
               <div className="w-3 h-3 bg-white/50 rounded-full"></div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -348,7 +348,7 @@ export default function HomePage() {
               />
             </div>
             <Image 
-              src={PerfumBanner} 
+              src={MobileBanner} 
               alt="Perfume Banner" 
               className="w-full h-auto rounded-md transition-transform duration-300 group-hover:scale-105" 
             />
@@ -525,7 +525,7 @@ export default function HomePage() {
       </div>
 
       {/* Desktop Trending Products Section - Hidden on mobile */}
-      <div className="hidden lg:block bg-white py-12">
+      <div className="hidden lg:block bg-white mb-4">
         <div className="container mx-auto px-6">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center space-x-4">
