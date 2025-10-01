@@ -206,8 +206,7 @@ export default function HomePage() {
           <Image 
             src={PerfumBanner} 
             alt="Perfume Collection" 
-            className="w-full h-full" 
-         
+            className="w-full h-full object-cover" 
             priority
           />
           {/* Overlay gradient for better text readability */}
