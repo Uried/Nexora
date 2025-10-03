@@ -14,7 +14,7 @@ import DesktopHeader from '../components/DesktopHeader';
 import Header from '../components/Header';
 import { BsHeart, BsHeartFill } from 'react-icons/bs';
 import { useRouter } from "next/navigation";
-import { getCartFull, type ServerCartResponse } from '../lib/cart';
+import { getCartFull } from '../lib/cart';
 
 export default function HomePage() {
   // État pour gérer les catégories sélectionnées
@@ -51,14 +51,12 @@ export default function HomePage() {
   const [likedProducts, setLikedProducts] = useState<{ [key: string]: boolean }>({ 'Black Opium': true });
   // État pour gérer le nombre d'articles dans le panier
   const [cartItemCount, setCartItemCount] = useState<number>(0);
-  const [cartData, setCartData] = useState<ServerCartResponse | null>(null);
   const router = useRouter();
 
   // Fonction pour charger le panier
   const loadCart = async () => {
     try {
       const data = await getCartFull();
-      setCartData(data);
       if (data?.cart?.items) {
         // Calculer le nombre total d'articles (somme des quantités)
         const totalItems = data.cart.items.reduce((total, item) => total + item.quantity, 0);
