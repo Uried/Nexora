@@ -166,3 +166,47 @@ body {
     opacity: 0;
   }
 }
+
+/* Header fixe forcé */
+.mobile-header-fixed {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100vw !important;
+  z-index: 9999 !important;
+  transform: translateZ(0) !important;
+  will-change: transform !important;
+  -webkit-transform: translateZ(0) !important;
+  -webkit-backface-visibility: hidden !important;
+  backface-visibility: hidden !important;
+}
+
+/* Force le body à ne pas avoir de transform qui pourrait affecter le fixed positioning */
+body {
+  transform: none !important;
+  -webkit-transform: none !important;
+}
+
+/* Assure que le html et body n'ont pas de propriétés qui interfèrent */
+html, body {
+  overflow-x: hidden !important;
+  position: relative !important;
+}
+
+/* Menu mobile avec fond forcé */
+.mobile-menu-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background-color: white !important;
+  z-index: 10001 !important;
+  transform: translateZ(0) !important;
+  -webkit-transform: translateZ(0) !important;
+  -webkit-backface-visibility: hidden !important;
+  backface-visibility: hidden !important;
+}

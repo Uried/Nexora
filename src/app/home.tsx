@@ -11,8 +11,10 @@ import MobileBanner from '../../src/assets/images/bann_phone.png';
 import Link from 'next/link';
 import { FiSearch, FiShoppingCart } from 'react-icons/fi';
 import DesktopHeader from '../components/DesktopHeader';
+import Header from '../components/Header';
 import { BsHeart, BsHeartFill } from 'react-icons/bs';
 import { useRouter } from "next/navigation";
+import { getCartFull, type ServerCartResponse } from '../lib/cart';
 
 export default function HomePage() {
   // État pour gérer les catégories sélectionnées
@@ -48,8 +50,42 @@ export default function HomePage() {
   // État pour gérer les produits aimés
   const [likedProducts, setLikedProducts] = useState<{ [key: string]: boolean }>({ 'Black Opium': true });
   // État pour gérer le nombre d'articles dans le panier
-  const [cartItemCount] = useState<number>(3);
+  const [cartItemCount, setCartItemCount] = useState<number>(0);
+  const [cartData, setCartData] = useState<ServerCartResponse | null>(null);
   const router = useRouter();
+
+  // Fonction pour charger le panier
+  const loadCart = async () => {
+    try {
+      const data = await getCartFull();
+      setCartData(data);
+      if (data?.cart?.items) {
+        // Calculer le nombre total d'articles (somme des quantités)
+        const totalItems = data.cart.items.reduce((total, item) => total + item.quantity, 0);
+        setCartItemCount(totalItems);
+      } else {
+        setCartItemCount(0);
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement du panier:', error);
+      setCartItemCount(0);
+    }
+  };
+
+  // Charger le panier au montage du composant
+  useEffect(() => {
+    loadCart();
+  }, []);
+
+  // Recharger le panier quand la page devient visible (par exemple après un retour depuis la page panier)
+  useEffect(() => {
+    const handleFocus = () => {
+      loadCart();
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, []);
 
   // États pour le carrousel de bannières (commentés car non utilisés actuellement)
   // const [currentBanner, setCurrentBanner] = useState<number>(0);
@@ -196,6 +232,8 @@ export default function HomePage() {
 
   return (
     <div className="bg-[#fbf0ef] min-h-screen">
+      {/* Mobile Header - Hidden on desktop */}
+      <Header defaultLanguage="FR" />
       {/* Desktop Header - Hidden on mobile */}
       <DesktopHeader searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
@@ -253,7 +291,7 @@ export default function HomePage() {
       </div>
 
       {/* Mobile Layout - Hidden on desktop */}
-      <div className="lg:hidden container mx-auto px-4 py-6">
+      <div className="lg:hidden container mx-auto px-4 pt-5 pb-6">
       {/* Welcome section */}
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push('/account')}>
@@ -273,7 +311,7 @@ export default function HomePage() {
               <FiShoppingCart size={18} />
             </button>
             {cartItemCount > 0 && (
-              <div className="absolute hidden -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                 {cartItemCount}
               </div>
             )}
@@ -330,9 +368,9 @@ export default function HomePage() {
 
       </div> */}
 
-        <div className="rounded-3xl p-3 mb-6 overflow-hidden relative group">
+        <div className="mb-6 -mx-6 overflow-hidden relative group">
           <div 
-            className="relative overflow-hidden rounded-md"
+            className="relative overflow-hidden"
             style={{
               animation: 'bannerFloat 4s ease-in-out infinite'
             }}
@@ -349,7 +387,7 @@ export default function HomePage() {
             <Image 
               src={MobileBanner} 
               alt="Perfume Banner" 
-              className="w-full h-auto rounded-md transition-transform duration-300 group-hover:scale-105" 
+              className="w-full h-auto transition-transform duration-300 group-hover:scale-105" 
             />
           </div>
         </div>
