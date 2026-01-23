@@ -20,7 +20,7 @@ export default function DesktopHeader({ searchQuery = '', setSearchQuery }: Desk
             <Link href="/" className="flex items-center cursor-pointer">
               <Image 
                 src={Logo} 
-                alt="Nexora Logo" 
+                alt="kasi Logo" 
                 width={120} 
                 height={40} 
                 className="h-16 w-auto"
