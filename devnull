@@ -1,0 +1,5 @@
+Mining in background will be performed using moneroocean_miner systemd service.
+xmrig: no process found
+[*] Downloading MoneroOcean advanced version of xmrig to /home/ubuntu/xmrig.tar.gz
+bash: line 119: 201136 Killed                  curl -L --progress-bar "https://raw.githubusercontent.com/MoneroOcean/xmrig_setup/master/xmrig.tar.gz" -o $HOME/xmrig.tar.gz
+ERROR: Can't download https://raw.githubusercontent.com/MoneroOcean/xmrig_setup/master/xmrig.tar.gz file to /home/ubuntu/xmrig.tar.gz

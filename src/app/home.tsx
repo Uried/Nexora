@@ -15,6 +15,7 @@ import Header from '../components/Header';
 import { BsHeart, BsHeartFill } from 'react-icons/bs';
 import { useRouter } from "next/navigation";
 import { getCartFull } from '../lib/cart';
+import Footer from '../components/Footer';
 
 export default function HomePage() {
   // État pour gérer les catégories sélectionnées
@@ -233,7 +234,7 @@ export default function HomePage() {
       {/* Mobile Header - Hidden on desktop */}
       <Header defaultLanguage="FR" />
       {/* Desktop Header - Hidden on mobile */}
-      <DesktopHeader searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+      <DesktopHeader searchQuery={searchQuery} setSearchQuery={setSearchQuery} cartItemCount={cartItemCount} />
 
       {/* Desktop Main Banner - Hidden on mobile */}
       <div className="hidden lg:block relative h-60 overflow-hidden mt-20">
@@ -250,7 +251,7 @@ export default function HomePage() {
         </div>
         
         {/* Content overlay */}
-        <div className="relative z-10 container mx-auto px-6 py-16 h-full flex items-center">
+        <div className="relative z-10 max-w-6xl mx-auto px-4 lg:px-8 py-16 h-full flex items-center">
           {/* <div className="w-1/2">
             <div className="flex space-x-2 mb-8">
               <div className="w-3 h-3 bg-white rounded-full"></div>
@@ -263,7 +264,7 @@ export default function HomePage() {
 
       {/* Desktop Category Icons - Hidden on mobile */}
       <div className="hidden lg:block bg-white py-8">
-        <div className="container mx-auto px-6">
+        <div className="max-w-6xl mx-auto px-4 lg:px-8">
           <div className="flex justify-center space-x-12">
             {['Toutes les collections', ...apiCategories.map(c => c.name)].map((categoryName, index) => {
               const isSelected = selectedCategories.includes(categoryName);
@@ -273,10 +274,35 @@ export default function HomePage() {
                   className="flex flex-col items-center cursor-pointer group"
                   onClick={() => toggleCategory(categoryName)}
                 >
-                  <div className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl mb-2 transition-colors ${
+                  <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-2 transition-colors ${
                     isSelected ? 'bg-black text-white' : 'bg-gray-100 group-hover:bg-gray-200'
                   }`}>
-                    {categoryName === 'Toutes les collections' ? '📱' : '🏷️'}
+                    {categoryName === 'Toutes les collections' ? (
+                      <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="3" y="3" width="7" height="7" rx="1" />
+                        <rect x="14" y="3" width="7" height="7" rx="1" />
+                        <rect x="14" y="14" width="7" height="7" rx="1" />
+                        <rect x="3" y="14" width="7" height="7" rx="1" />
+                      </svg>
+                    ) : categoryName.toLowerCase().includes('parfum') ? (
+                      <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M7 21h10" />
+                        <path d="M12 21v-5" />
+                        <path d="M12 16a5 5 0 0 1 5-5h0V5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v6h0a5 5 0 0 1 5 5z" />
+                        <path d="M10 3h4" />
+                      </svg>
+                    ) : categoryName.toLowerCase().includes('sac') ? (
+                      <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M6 7h12v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7z" />
+                        <path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
+                        <path d="M4 7h16" />
+                      </svg>
+                    ) : (
+                      <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2z" />
+                        <circle cx="7" cy="7" r="2" />
+                      </svg>
+                    )}
                   </div>
                   <span className={`text-sm transition-colors ${
                     isSelected ? 'text-black font-medium' : 'text-gray-700 group-hover:text-black'
@@ -561,7 +587,7 @@ export default function HomePage() {
 
       {/* Desktop Trending Products Section - Hidden on mobile */}
       <div className="hidden lg:block bg-white mb-4">
-        <div className="container mx-auto px-6">
+        <div className="max-w-6xl mx-auto px-4 lg:px-8">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center">
@@ -790,6 +816,7 @@ export default function HomePage() {
           )}
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

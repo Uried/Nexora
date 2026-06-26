@@ -3,18 +3,21 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FiSearch } from 'react-icons/fi';
+import { FiSearch, FiShoppingCart } from 'react-icons/fi';
+import { useRouter } from 'next/navigation';
 import Logo from '../assets/images/logo.png';
 
 interface DesktopHeaderProps {
   searchQuery?: string;
   setSearchQuery?: (query: string) => void;
+  cartItemCount?: number;
 }
 
-export default function DesktopHeader({ searchQuery = '', setSearchQuery }: DesktopHeaderProps) {
+export default function DesktopHeader({ searchQuery = '', setSearchQuery, cartItemCount = 0 }: DesktopHeaderProps) {
+  const router = useRouter();
   return (
     <div className="hidden lg:block bg-white border-b fixed top-0 left-0 right-0 z-50">
-      <div className="container mx-auto px-6 py-3">
+      <div className="max-w-6xl mx-auto px-4 lg:px-8 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-8">
             <Link href="/" className="flex items-center cursor-pointer">
@@ -43,6 +46,16 @@ export default function DesktopHeader({ searchQuery = '', setSearchQuery }: Desk
             <button className="text-sm text-gray-600 hover:text-black cursor-pointer">À propos de Kasi</button>
             <button className="text-sm bg-black text-white px-4 py-2 rounded-full cursor-pointer hover:bg-gray-800">S&apos;inscrire</button>
             <button className="text-sm border-2 border-black text-black px-4 py-2 rounded-full cursor-pointer hover:bg-black hover:text-white transition-colors">Connexion</button>
+            <div className="relative cursor-pointer" onClick={() => router.push('/cart')}>
+              <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors text-black">
+                <FiShoppingCart size={20} />
+              </button>
+              {cartItemCount > 0 && (
+                <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
+                  {cartItemCount}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

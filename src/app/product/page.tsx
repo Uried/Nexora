@@ -11,7 +11,7 @@ import { addToCart } from '../../lib/cart';
 function ProductContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const id = searchParams.get('id');
+  const id = searchParams?.get('id');
 
   interface Category { id: string; name: string }
   interface Product {
