@@ -243,7 +243,7 @@ export default function CheckoutPage() {
 
     return (
         <>
-            <Header defaultLanguage="FR" />
+            <Header />
             <DesktopHeader />
             {/* Mobile Layout */}
             <div className="lg:hidden pt-16 bg-[#fbf0ef] min-h-screen px-4 pb-20">
@@ -404,7 +404,7 @@ export default function CheckoutPage() {
 
             {/* Desktop Layout */}
             <div className="hidden lg:block pt-36 bg-white min-h-screen">
-                <div className="container mx-auto px-6 py-8">
+                <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
                     {loading ? (
                         <div className="flex items-center justify-center py-16">
                             <div className="bg-gray-50 px-6 py-4 rounded-xl">Chargement du panier...</div>

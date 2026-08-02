@@ -129,7 +129,7 @@ export default function OrdersPage() {
 
   return (
     <>
-      <Header defaultLanguage="FR" />
+      <Header />
       <div className="pt-16 pb-20 bg-[#fbf0ef] min-h-screen px-4">
         {/* Header avec titre et bouton retour */}
         <div className="flex items-center justify-between mb-6 mt-6">

@@ -4,18 +4,15 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FiMenu, FiUser } from 'react-icons/fi';
+import { FiMenu } from 'react-icons/fi';
 import Logo from '../assets/images/logo.png';
+import { useLanguage } from '@/contexts/LanguageContext';
 
-interface HeaderProps {
-  defaultLanguage?: 'FR' | 'EN';
-}
-
-const Header: React.FC<HeaderProps> = ({ defaultLanguage = 'FR' }) => {
+const Header: React.FC = () => {
+  const { language, setLanguage, t } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [language, setLanguage] = useState<'FR' | 'EN'>(defaultLanguage);
   const [mounted, setMounted] = useState(false);
-  
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -51,7 +48,7 @@ const Header: React.FC<HeaderProps> = ({ defaultLanguage = 'FR' }) => {
           <Link href="/" className="flex items-center">
             <Image 
               src={Logo} 
-              alt="Nexora" 
+              alt="kasi" 
               width={120} 
               height={40} 
               className="h-8 w-auto object-contain" 
@@ -60,16 +57,16 @@ const Header: React.FC<HeaderProps> = ({ defaultLanguage = 'FR' }) => {
 
           {/* Icons */}
           <div className="flex items-center space-x-3">
-            <button 
-              className="px-2 py-1 rounded-full bg-black text-white text-xs font-medium hover:bg-gray-800" 
+            <button
+              className="px-2 py-1 rounded-full bg-black text-white text-xs font-medium hover:bg-gray-800"
               onClick={toggleLanguage}
               aria-label="Change language"
             >
               {language}
             </button>
-            <button className="p-2 rounded-full hover:bg-gray-100" aria-label="Account">
+            {/* <button className="p-2 rounded-full hover:bg-gray-100" aria-label="Account">
               <FiUser size={20} />
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
@@ -93,12 +90,12 @@ const Header: React.FC<HeaderProps> = ({ defaultLanguage = 'FR' }) => {
           <ul className="space-y-4">
             <li>
               <Link href="/" className="block py-2 text-lg" onClick={toggleMenu}>
-                Accueil
+                {t('nav.home')}
               </Link>
             </li>
             <li>
               <Link href="/categories" className="block py-2 text-lg" onClick={toggleMenu}>
-                Catégories
+                {t('nav.categories')}
               </Link>
             </li>
             {/* <li>

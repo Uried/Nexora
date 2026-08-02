@@ -78,6 +78,7 @@ export type ServerCartItem = {
     discountPrice?: number;
     images?: string[];
     details?: { brand?: string };
+    stock?: number;
   };
   quantity: number;
   priceAtAdd?: number;

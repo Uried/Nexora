@@ -4,8 +4,10 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Logo from '../assets/images/logo.png';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Footer() {
+  const { t } = useLanguage();
   return (
     <footer className="bg-black text-white mt-8">
       <div className="max-w-6xl mx-auto px-4 lg:px-8 py-12">
@@ -16,7 +18,7 @@ export default function Footer() {
               <Image src={Logo} alt="Kasi" width={100} height={35} className="h-10 w-auto brightness-0 invert mb-4" />
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed">
-              Découvrez les meilleurs parfums et produits de beauté. Livraison rapide partout au Cameroun.
+              {t('footer.description')}
             </p>
             <div className="flex space-x-3 mt-4">
               <a href="https://web.facebook.com/KasiShop" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors">
@@ -39,28 +41,28 @@ export default function Footer() {
 
           {/* Colonne Boutique */}
           <div>
-            <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Boutique</h4>
+            <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">{t('footer.shop')}</h4>
             <ul className="space-y-2">
-              <li><Link href="/" className="text-gray-400 hover:text-white text-sm transition-colors">Accueil</Link></li>
-              <li><Link href="/products" className="text-gray-400 hover:text-white text-sm transition-colors">Tous les produits</Link></li>
-              <li><Link href="/categories" className="text-gray-400 hover:text-white text-sm transition-colors">Catégories</Link></li>
-              <li><Link href="/cart" className="text-gray-400 hover:text-white text-sm transition-colors">Mon panier</Link></li>
+              <li><Link href="/" className="text-gray-400 hover:text-white text-sm transition-colors">{t('nav.home')}</Link></li>
+              <li><Link href="/products" className="text-gray-400 hover:text-white text-sm transition-colors">{t('nav.products')}</Link></li>
+              <li><Link href="/categories" className="text-gray-400 hover:text-white text-sm transition-colors">{t('nav.categories')}</Link></li>
+              <li><Link href="/cart" className="text-gray-400 hover:text-white text-sm transition-colors">{t('nav.cart')}</Link></li>
             </ul>
           </div>
 
           {/* Colonne Entreprise */}
           <div>
-            <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Entreprise</h4>
+            <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">{t('footer.company')}</h4>
             <ul className="space-y-2">
-              <li><Link href="#" className="text-gray-400 hover:text-white text-sm transition-colors">À propos</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white text-sm transition-colors">Devenir partenaire</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white text-sm transition-colors">Blog</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white text-sm transition-colors">{t('footer.about')}</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white text-sm transition-colors">{t('footer.becomePartner')}</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white text-sm transition-colors">{t('footer.blog')}</Link></li>
             </ul>
           </div>
 
           {/* Colonne Support */}
           <div>
-            <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Support</h4>
+            <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">{t('footer.support')}</h4>
             <ul className="space-y-3">
               <li>
                 <a href="mailto:support@kasi.market" className="text-gray-400 hover:text-white text-sm transition-colors flex items-center gap-2">
@@ -74,19 +76,14 @@ export default function Footer() {
                   +237 6 51 41 83 76
                 </a>
               </li>
-              <li><Link href="#" className="text-gray-400 hover:text-white text-sm transition-colors">Centre d&apos;aide</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white text-sm transition-colors">{t('footer.helpCenter')}</Link></li>
             </ul>
           </div>
         </div>
 
         {/* Séparateur */}
         <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-gray-500 text-sm">© {new Date().getFullYear()} Kasi. Tous droits réservés.</p>
-          <div className="flex items-center space-x-6">
-            <Link href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Conditions d&apos;utilisation</Link>
-            <Link href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Politique de confidentialité</Link>
-            <Link href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Mentions légales</Link>
-          </div>
+          <p className="text-gray-500 text-sm">© {new Date().getFullYear()} Kasi. {t('footer.rights')}</p>
         </div>
       </div>
     </footer>

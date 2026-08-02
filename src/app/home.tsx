@@ -15,11 +15,19 @@ import Header from '../components/Header';
 import { BsHeart, BsHeartFill } from 'react-icons/bs';
 import { useRouter } from "next/navigation";
 import { getCartFull } from '../lib/cart';
-import Footer from '../components/Footer';
+import { useSearch } from '@/contexts/SearchContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function HomePage() {
+  const { searchQuery, setSearchQuery } = useSearch();
+  const { t } = useLanguage();
+  const router = useRouter();
+
+  // Constante pour l'identifiant "Toutes les collections"
+  const ALL_COLLECTIONS = 'all-collections';
+
   // État pour gérer les catégories sélectionnées
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(['Toutes les collections']);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([ALL_COLLECTIONS]);
   // État pour les catégories récupérées depuis l'API
   interface Category { id: string; name: string; slug?: string }
   const [apiCategories, setApiCategories] = useState<Category[]>([]);
@@ -45,14 +53,10 @@ export default function HomePage() {
   const [currentDesktopPage, setCurrentDesktopPage] = useState<number>(1);
   const [desktopProductsPerPage] = useState<number>(12);
 
-  // État pour la recherche en temps réel
-  const [searchQuery, setSearchQuery] = useState<string>('');
-
   // État pour gérer les produits aimés
   const [likedProducts, setLikedProducts] = useState<{ [key: string]: boolean }>({ 'Black Opium': true });
   // État pour gérer le nombre d'articles dans le panier
   const [cartItemCount, setCartItemCount] = useState<number>(0);
-  const router = useRouter();
 
   // Fonction pour charger le panier
   const loadCart = async () => {
@@ -161,13 +165,13 @@ export default function HomePage() {
         const data = await res.json();
         setProducts(data.products ?? []);
       } catch {
-        setErrorProducts("Impossible de charger les produits.");
+        setErrorProducts(t('home.loadProductsError'));
       } finally {
         setLoadingProducts(false);
       }
     };
     load();
-  }, [currentCategoryId]);
+  }, [currentCategoryId, t]);
 
   // Réinitialiser la pagination quand les filtres changent
   useEffect(() => {
@@ -185,22 +189,22 @@ export default function HomePage() {
 
   // Fonction pour gérer la sélection/désélection des catégories
   const toggleCategory = (category: string) => {
-    if (category === 'Toutes les collections') {
+    if (category === ALL_COLLECTIONS) {
       // Si on clique sur "Toutes les collections", on désélectionne tout le reste
-      setSelectedCategories(['Toutes les collections']);
+      setSelectedCategories([ALL_COLLECTIONS]);
       setCurrentCategoryId(null); // revient à tous les produits
       return;
     }
 
     // Si une catégorie spécifique est sélectionnée, on retire "Toutes les collections"
-    const newSelection = selectedCategories.filter(cat => cat !== 'Toutes les collections');
+    const newSelection = selectedCategories.filter(cat => cat !== ALL_COLLECTIONS);
 
     // Toggle de la catégorie cliquée
     if (newSelection.includes(category)) {
       // Si la catégorie est déjà sélectionnée, on la retire
       // Mais si c'est la dernière, on revient à "Toutes les collections"
       const filteredSelection = newSelection.filter(cat => cat !== category);
-      setSelectedCategories(filteredSelection.length === 0 ? ['Toutes les collections'] : filteredSelection);
+      setSelectedCategories(filteredSelection.length === 0 ? [ALL_COLLECTIONS] : filteredSelection);
       if (filteredSelection.length === 0) {
         setCurrentCategoryId(null);
       } else {
@@ -232,9 +236,9 @@ export default function HomePage() {
   return (
     <div className="bg-[#fbf0ef] min-h-screen">
       {/* Mobile Header - Hidden on desktop */}
-      <Header defaultLanguage="FR" />
+      <Header />
       {/* Desktop Header - Hidden on mobile */}
-      <DesktopHeader searchQuery={searchQuery} setSearchQuery={setSearchQuery} cartItemCount={cartItemCount} />
+      <DesktopHeader cartItemCount={cartItemCount} />
 
       {/* Desktop Main Banner - Hidden on mobile */}
       <div className="hidden lg:block relative h-60 overflow-hidden mt-20">
@@ -251,7 +255,7 @@ export default function HomePage() {
         </div>
         
         {/* Content overlay */}
-        <div className="relative z-10 max-w-6xl mx-auto px-4 lg:px-8 py-16 h-full flex items-center">
+        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-16 h-full flex items-center">
           {/* <div className="w-1/2">
             <div className="flex space-x-2 mb-8">
               <div className="w-3 h-3 bg-white rounded-full"></div>
@@ -264,9 +268,9 @@ export default function HomePage() {
 
       {/* Desktop Category Icons - Hidden on mobile */}
       <div className="hidden lg:block bg-white py-8">
-        <div className="max-w-6xl mx-auto px-4 lg:px-8">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex justify-center space-x-12">
-            {['Toutes les collections', ...apiCategories.map(c => c.name)].map((categoryName, index) => {
+            {[ALL_COLLECTIONS, ...apiCategories.map(c => c.name)].map((categoryName, index) => {
               const isSelected = selectedCategories.includes(categoryName);
               return (
                 <div 
@@ -277,7 +281,7 @@ export default function HomePage() {
                   <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-2 transition-colors ${
                     isSelected ? 'bg-black text-white' : 'bg-gray-100 group-hover:bg-gray-200'
                   }`}>
-                    {categoryName === 'Toutes les collections' ? (
+                    {categoryName === ALL_COLLECTIONS ? (
                       <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <rect x="3" y="3" width="7" height="7" rx="1" />
                         <rect x="14" y="3" width="7" height="7" rx="1" />
@@ -306,7 +310,7 @@ export default function HomePage() {
                   </div>
                   <span className={`text-sm transition-colors ${
                     isSelected ? 'text-black font-medium' : 'text-gray-700 group-hover:text-black'
-                  }`}>{categoryName}</span>
+                  }`}>{categoryName === ALL_COLLECTIONS ? t('products.allCollections') : categoryName}</span>
                 </div>
               );
             })}
@@ -318,7 +322,7 @@ export default function HomePage() {
       <div className="lg:hidden container mx-auto px-4 pt-5 pb-6">
       {/* Welcome section */}
       <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push('/account')}>
+        <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push('/')}>
           <div className="w-12 h-12 rounded-full overflow-hidden bg-blue-200 flex items-center justify-center">
             {/* Placeholder pour l'avatar */}
             <Image src={Profile_pic} alt="Profile" width={40} height={40} onClick={() => router.push('/account')} />
@@ -345,24 +349,29 @@ export default function HomePage() {
 
       {/* Search bar */}
 
-      <div className="relative flex items-center w-full space-x-2 mb-6">
+      <form onSubmit={(e) => {
+        e.preventDefault();
+        if (searchQuery.trim()) {
+          router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+        }
+      }} className="relative flex items-center w-full space-x-2 mb-6">
         <div className="flex items-center bg-white rounded-full px-4 py-3 shadow-sm w-full">
           <FiSearch className="text-gray-500 mr-2" size={18} />
           <input
             type="text"
-            placeholder="Trouvez votre article"
+            placeholder={t('home.searchPlaceholder')}
             className="bg-transparent border-none outline-none flex-grow text-sm"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <button 
+        <button
+          type="submit"
           className="bg-black text-white rounded-full p-3"
-          // onClick={() => router.push('/liked')}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#fff" fillRule="evenodd" d="M5.722 6.8c-.923 1.176-1.256 2.281-1.22 3.31c.038 1.045.458 2.068 1.136 3.06c1.367 1.996 3.694 3.737 5.609 5.09c.452.32 1.05.32 1.502 0c1.93-1.36 4.256-3.1 5.62-5.095c.676-.99 1.093-2.012 1.129-3.055c.034-1.029-.3-2.134-1.225-3.31c-1.62-1.711-3.953-1.66-5.541-.278a1.125 1.125 0 0 1-1.468 0c-1.589-1.381-3.92-1.433-5.542.279m-.743-.669c2.016-2.145 4.97-2.077 6.941-.363a.12.12 0 0 0 .078.027q.05-.002.077-.027c1.97-1.714 4.928-1.783 6.942.364l.015.015l.013.017c1.059 1.34 1.496 2.677 1.452 3.98c-.043 1.292-.558 2.495-1.303 3.585c-1.48 2.164-3.953 3.998-5.868 5.349a2.3 2.3 0 0 1-2.657-.001c-1.9-1.344-4.374-3.178-5.856-5.343c-.746-1.09-1.264-2.295-1.31-3.588c-.046-1.304.389-2.641 1.448-3.982l.013-.017z" clipRule="evenodd" /></svg>
         </button>
-      </div>
+      </form>
 
 
       {/* Featured Collection - Carousel */}
@@ -418,19 +427,19 @@ export default function HomePage() {
 
       {/* Category Pills */}
       <div className="flex justify-between items-center mb-3">
-        <h3 className="text-lg font-semibold text-black">Catégories</h3>
+        <h3 className="text-lg font-semibold text-black">{t('home.categories')}</h3>
         <Link href="/categories" className="text-gray-500 text-sm bg-white px-2 py-1 rounded-full">
-          Voir tout
+          {t('home.seeAll')}
         </Link>
       </div>
       <div className="flex space-x-3 mb-6 overflow-x-auto pb-2">
-        {['Toutes les collections', ...apiCategories.map(c => c.name)].map((category) => (
+        {[ALL_COLLECTIONS, ...apiCategories.map(c => c.name)].map((category) => (
           <button
             key={category}
             onClick={() => toggleCategory(category)}
             className={`px-4 py-1.5 rounded-full text-sm whitespace-nowrap transition-colors duration-200 ${selectedCategories.includes(category) ? 'bg-black text-white' : 'bg-white text-gray-700'}`}
           >
-            {category}
+            {category === ALL_COLLECTIONS ? t('products.allCollections') : category}
           </button>
         ))}
       </div>
@@ -438,13 +447,13 @@ export default function HomePage() {
       {/* Popular Perfumes / Produits tendance */}
       <div className="mb-6">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-black">Produits tendance</h3>
+          <h3 className="text-lg font-semibold text-black">{t('home.trendingProducts')}</h3>
           <Link href="/products" className="text-gray-500 text-sm bg-white px-2 py-1 rounded-full">
-            Voir tout
+            {t('home.seeAll')}
           </Link>
         </div>
         {loadingProducts && (
-          <p className="text-gray-600">Chargement des produits...</p>
+          <p className="text-gray-600">{t('home.loadingProducts')}</p>
         )}
         {errorProducts && (
           <p className="text-red-600">{errorProducts}</p>
@@ -587,7 +596,7 @@ export default function HomePage() {
 
       {/* Desktop Trending Products Section - Hidden on mobile */}
       <div className="hidden lg:block bg-white mb-4">
-        <div className="max-w-6xl mx-auto px-4 lg:px-8">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center">
@@ -595,7 +604,7 @@ export default function HomePage() {
                   <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                 </svg>
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">Produits tendance</h2>
+              <h2 className="text-2xl font-bold text-gray-900">{t('home.trendingProducts')}</h2>
              
             </div>
             <div className="flex space-x-2">
@@ -816,7 +825,6 @@ export default function HomePage() {
           )}
         </div>
       </div>
-      <Footer />
     </div>
   );
 }
