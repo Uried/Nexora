@@ -4,10 +4,6 @@ import React, { useState, useEffect } from 'react';
 
 import Image from 'next/image';
 import Profile_pic from '../../src/assets/images/profile-pic.jpg';
-// import Banner1 from '../../src/assets/images/banner1.png';
-// import Banner2 from '../../src/assets/images/banner2.png';
-import PerfumBanner from '../../src/assets/images/bann_desktop1.png';
-import MobileBanner from '../../src/assets/images/bann_phone.png';
 import Link from 'next/link';
 import { FiSearch, FiShoppingCart } from 'react-icons/fi';
 import DesktopHeader from '../components/DesktopHeader';
@@ -15,6 +11,7 @@ import Header from '../components/Header';
 import { BsHeart, BsHeartFill } from 'react-icons/bs';
 import { useRouter } from "next/navigation";
 import { getCartFull } from '../lib/cart';
+import { getBanners, Banner } from '../lib/banner';
 import { useSearch } from '@/contexts/SearchContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -58,6 +55,12 @@ export default function HomePage() {
   // État pour gérer le nombre d'articles dans le panier
   const [cartItemCount, setCartItemCount] = useState<number>(0);
 
+  // État pour les bannières depuis l'API
+  const [banners, setBanners] = useState<Banner[]>([]);
+  const [currentBannerIndex, setCurrentBannerIndex] = useState<number>(0);
+  const [isBannerAnimating, setIsBannerAnimating] = useState<boolean>(false);
+  const [isVideoPaused, setIsVideoPaused] = useState<boolean>(false);
+
   // Fonction pour charger le panier
   const loadCart = async () => {
     try {
@@ -90,46 +93,47 @@ export default function HomePage() {
     return () => window.removeEventListener('focus', handleFocus);
   }, []);
 
-  // États pour le carrousel de bannières (commentés car non utilisés actuellement)
-  // const [currentBanner, setCurrentBanner] = useState<number>(0);
-  // const [isAnimating, setIsAnimating] = useState<boolean>(false);
-  
-  // Données des bannières (texte et image) - commentées car non utilisées actuellement
-  // const bannerData = [
-  //   {
-  //     title: "Votre style, votre beauté",
-  //     description: "Découvrez la meilleure collection. Trouvez votre parfum signature aujourd'hui.",
-  //     buttonText: "Commandez maintenant",
-  //     image: Banner1
-  //   },
-  //   {
-  //     title: "Sacs à tomber!",
-  //     description: "Craque pour nos nouveaux sacs trop stylés! Parfaits pour compléter ton look et faire tourner les têtes.",
-  //     buttonText: "Je veux voir ça!",
-  //     image: Banner2
-  //   }
-  // ];
-  
-  // Effet pour changer de bannière toutes les 3 secondes avec effet de fondu - commenté car non utilisé actuellement
-  // useEffect(() => {
-  //   const changeBanner = () => {
-  //     // Démarrer l'animation de fondu
-  //     setIsAnimating(true);
-  //     
-  //     // Attendre que l'animation de sortie soit terminée avant de changer la bannière
-  //     setTimeout(() => {
-  //       setCurrentBanner(prev => (prev + 1) % bannerData.length);
-  //       
-  //       // Attendre un court instant puis démarrer l'animation d'entrée
-  //       setTimeout(() => {
-  //         setIsAnimating(false);
-  //       }, 50);
-  //     }, 500);
-  //   };
-  //   
-  //   const interval = setInterval(changeBanner, 5000);
-  //   return () => clearInterval(interval);
-  // }, [bannerData.length]);
+  // Charger les bannières depuis l'API
+  useEffect(() => {
+    const loadBanners = async () => {
+      try {
+        const data = await getBanners();
+        setBanners(data);
+      } catch (error) {
+        console.error('Erreur lors du chargement des bannières:', error);
+      }
+    };
+    loadBanners();
+  }, []);
+
+  // Fonction pour passer à la bannière suivante avec animation de fondu
+  const goToNextBanner = () => {
+    setIsBannerAnimating(true);
+    // Attendre la fin du fade-out avant de changer l'index
+    setTimeout(() => {
+      setCurrentBannerIndex(prev => (prev + 1) % banners.length);
+      // Petit délai pour que le nouveau contenu soit monté, puis fade-in
+      setTimeout(() => {
+        setIsBannerAnimating(false);
+      }, 100);
+    }, 700);
+  };
+
+  // Effet pour changer de bannière : 5s pour les images, attendre la fin pour les vidéos
+  useEffect(() => {
+    if (banners.length <= 1) return;
+
+    const currentBanner = banners[currentBannerIndex];
+    // Si c'est une vidéo, on pause le timer et on attend l'événement onEnded
+    if (currentBanner?.type === 'video') {
+      setIsVideoPaused(true);
+      return;
+    }
+
+    setIsVideoPaused(false);
+    const interval = setInterval(goToNextBanner, 5000);
+    return () => clearInterval(interval);
+  }, [banners.length, currentBannerIndex]);
 
   // Charger les catégories depuis l'API
   useEffect(() => {
@@ -234,37 +238,60 @@ export default function HomePage() {
   };
 
   return (
-    <div className="bg-[#fbf0ef] min-h-screen">
+    <div className="bg-[#fafafa] min-h-screen">
       {/* Mobile Header - Hidden on desktop */}
       <Header />
       {/* Desktop Header - Hidden on mobile */}
       <DesktopHeader cartItemCount={cartItemCount} />
 
       {/* Desktop Main Banner - Hidden on mobile */}
-      <div className="hidden lg:block relative h-60 overflow-hidden mt-20">
-        {/* Background Image */}
-        <div className="absolute inset-0 h-full w-full">
-          <Image 
-            src={PerfumBanner} 
-            alt="Perfume Collection" 
-            className="w-full h-full object-cover" 
-            priority
-          />
+      {banners.length > 0 && (
+      <div className="hidden lg:block relative mt-20">
+        {/* Background Image/Video from API */}
+        <div className="relative w-full">
+          <div className={`transition-opacity duration-700 ease-in-out ${isBannerAnimating ? 'opacity-0' : 'opacity-100'}`}>
+            {banners[currentBannerIndex]?.type === 'video' ? (
+              <video
+                src={banners[currentBannerIndex]?.url}
+                autoPlay
+                muted
+                playsInline
+                onEnded={goToNextBanner}
+                className="w-full object-cover block"
+                style={{ aspectRatio: '16/9', maxHeight: '600px' }}
+              />
+            ) : (
+              <Image 
+                src={banners[currentBannerIndex]?.url}
+                alt={banners[currentBannerIndex]?.altText || banners[currentBannerIndex]?.title || 'Banner'}
+                className="w-full object-cover block" 
+                priority
+                width={1920}
+                height={600}
+                style={{ aspectRatio: '16/9', maxHeight: '600px' }}
+              />
+            )}
+          </div>
           {/* Overlay gradient for better text readability */}
           <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/20"></div>
         </div>
         
-        {/* Content overlay */}
-        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-16 h-full flex items-center">
-          {/* <div className="w-1/2">
-            <div className="flex space-x-2 mb-8">
-              <div className="w-3 h-3 bg-white rounded-full"></div>
-              <div className="w-3 h-3 bg-white/50 rounded-full"></div>
-              <div className="w-3 h-3 bg-white/50 rounded-full"></div>
-            </div>
-          </div> */}
-        </div>
+        {/* Banner indicators */}
+        {banners.length > 1 && (
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+            {banners.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentBannerIndex(index)}
+                className={`w-3 h-3 rounded-full transition-all ${
+                  index === currentBannerIndex ? 'bg-white w-8' : 'bg-white/50'
+                }`}
+              />
+            ))}
+          </div>
+        )}
       </div>
+      )}
 
       {/* Desktop Category Icons - Hidden on mobile */}
       <div className="hidden lg:block bg-white py-8">
@@ -322,7 +349,7 @@ export default function HomePage() {
       <div className="lg:hidden container mx-auto px-4 pt-5 pb-6">
       {/* Welcome section */}
       <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push('/')}>
+        <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push('/ ')}>
           <div className="w-12 h-12 rounded-full overflow-hidden bg-blue-200 flex items-center justify-center">
             {/* Placeholder pour l'avatar */}
             <Image src={Profile_pic} alt="Profile" width={40} height={40} onClick={() => router.push('/account')} />
@@ -401,29 +428,64 @@ export default function HomePage() {
 
       </div> */}
 
-        <div className="mb-6 -mx-6 overflow-hidden relative group">
-          <div 
-            className="relative overflow-hidden"
-            style={{
-              animation: 'bannerFloat 4s ease-in-out infinite'
-            }}
-          >
-            {/* Effet shimmer sur la bannière */}
-            <div className="absolute inset-0 pointer-events-none z-10">
-              <div 
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent w-1/3 h-full"
-                style={{
-                  animation: 'bannerShimmer 5s ease-in-out infinite',
-                }}
-              />
+        {/* Dynamic Banner from API */}
+        {banners.length > 0 && (
+          <div className="mb-6 -mx-6 overflow-hidden relative group">
+            <div 
+              className="relative overflow-hidden"
+              style={{
+                animation: 'bannerFloat 4s ease-in-out infinite'
+              }}
+            >
+              {/* Effet shimmer sur la bannière */}
+              <div className="absolute inset-0 pointer-events-none z-10">
+                <div 
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent w-1/3 h-full"
+                  style={{
+                    animation: 'bannerShimmer 5s ease-in-out infinite',
+                  }}
+                />
+              </div>
+              
+              <div className={`transition-opacity duration-700 ease-in-out ${isBannerAnimating ? 'opacity-0' : 'opacity-100'}`}>
+                {banners[currentBannerIndex]?.type === 'video' ? (
+                  <video
+                    src={banners[currentBannerIndex]?.url}
+                    autoPlay
+                    muted
+                    playsInline
+                    onEnded={goToNextBanner}
+                    className="w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    style={{ aspectRatio: '16/9', maxHeight: '250px' }}
+                  />
+                ) : (
+                  <Image 
+                    src={banners[currentBannerIndex]?.url}
+                    alt={banners[currentBannerIndex]?.altText || banners[currentBannerIndex]?.title || 'Banner'}
+                    className="w-full h-auto transition-transform duration-300 group-hover:scale-105"
+                    width={800}
+                    height={400}
+                  />
+                )}
+              </div>
             </div>
-            <Image 
-              src={MobileBanner} 
-              alt="Perfume Banner" 
-              className="w-full h-auto transition-transform duration-300 group-hover:scale-105" 
-            />
+            
+            {/* Banner indicators */}
+            {banners.length > 1 && (
+              <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+                {banners.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentBannerIndex(index)}
+                    className={`w-2 h-2 rounded-full transition-all ${
+                      index === currentBannerIndex ? 'bg-white w-6' : 'bg-white/50'
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
-        </div>
+        )}
 
       {/* Category Pills */}
       <div className="flex justify-between items-center mb-3">
