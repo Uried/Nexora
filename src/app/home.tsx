@@ -59,7 +59,6 @@ export default function HomePage() {
   const [banners, setBanners] = useState<Banner[]>([]);
   const [currentBannerIndex, setCurrentBannerIndex] = useState<number>(0);
   const [isBannerAnimating, setIsBannerAnimating] = useState<boolean>(false);
-  const [isVideoPaused, setIsVideoPaused] = useState<boolean>(false);
 
   // Fonction pour charger le panier
   const loadCart = async () => {
@@ -126,13 +125,12 @@ export default function HomePage() {
     const currentBanner = banners[currentBannerIndex];
     // Si c'est une vidéo, on pause le timer et on attend l'événement onEnded
     if (currentBanner?.type === 'video') {
-      setIsVideoPaused(true);
       return;
     }
 
-    setIsVideoPaused(false);
     const interval = setInterval(goToNextBanner, 5000);
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [banners.length, currentBannerIndex]);
 
   // Charger les catégories depuis l'API
